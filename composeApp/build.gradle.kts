@@ -13,11 +13,11 @@ val appId = "app.atori.multi"
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.room)
 }
 
 room {
@@ -51,6 +51,7 @@ kotlin {
             implementation(compose.runtime)
             implementation(compose.material3)
             implementation(compose.components.resources)
+            implementation(libs.compose.navigation)
             implementation(compose.components.uiToolingPreview)
             implementation(compose.uiTooling)
 
@@ -61,7 +62,6 @@ kotlin {
             implementation(libs.androidx.room.ktx)
             implementation(libs.androidx.sqlite.bundled)
 
-            implementation(libs.compose.navigation)
             implementation(libs.smack.tcp)
             implementation(libs.smack.im)
             implementation(libs.smack.extensions)

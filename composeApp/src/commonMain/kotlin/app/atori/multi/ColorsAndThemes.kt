@@ -24,6 +24,15 @@ val filledButtonColors
         MaterialTheme.colorScheme.onSurface
     )
 
+val standardIconButtonColors
+    @Composable
+    get() = IconButtonColors(
+        Color.Transparent,
+        MaterialTheme.colorScheme.onSurfaceVariant,
+        Color.Transparent,
+        MaterialTheme.colorScheme.onSurface.opacify(0.38F)
+    )
+
 // 生成的颜色值
 val primaryLight = Color(0xFF8D4959)
 val onPrimaryLight = Color(0xFFFFFFFF)

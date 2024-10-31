@@ -1,11 +1,14 @@
 package app.atori.multi
 
+import androidx.compose.material3.MaterialTheme
 import app.atori.multi.pages.ChatPage
 import app.atori.multi.pages.OverviewPage
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -21,13 +24,13 @@ const val DestLogin = "login"
 fun AtoriMultiNavHost(navi: NavHostController, xmppViewModel: XmppViewModel) {
     val noAccount by xmppViewModel.noAccount.collectAsState(initial = false)
 
-    LaunchedEffect(navi, noAccount) {
+    LaunchedEffect(noAccount) {
         if (noAccount) navi.naviIfNotHere(DestLogin)
         else navi.naviIfNotHere(DestOverview)
     }
 
 
-    NavHost(navController = navi, startDestination = DestOverview) {
+    NavHost(navi, DestOverview,Modifier.clip(MaterialTheme.shapes.large)) {
         composable(DestOverview) { OverviewPage(xmppViewModel) }
         composable(DestLogin) { LoginPage(xmppViewModel /* ... */) }
         // Add more destinations similarly.
