@@ -11,6 +11,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 
 @Composable
+fun ElegantEditableLabel() {
+// TODO: 未实现
+}
+
+@Composable
 fun MsgItem(
     name: String,
     description: String? = null,

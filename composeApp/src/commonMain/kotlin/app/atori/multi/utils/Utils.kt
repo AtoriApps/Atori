@@ -12,17 +12,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import androidx.navigation.Navigator
 import androidx.room.RoomDatabase
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import app.atori.multi.databases.AtoriDatabase
 import kotlinx.coroutines.Dispatchers
-import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.StringResource
-import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.resources.vectorResource
+import org.jetbrains.compose.resources.*
 import org.jxmpp.jid.impl.JidCreate
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 object NavigatorUtils {
@@ -41,12 +40,25 @@ object NavigatorUtils {
 }
 
 object TimestampUtils {
+    private const val DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
+
     val Long.timeStr: String
-        get() {
-            val sdf = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault())
-            val date = Date(this)
-            return sdf.format(date)
-        }
+        get() = timeStr(DATE_FORMAT)
+
+    fun Long.timeStr(format: String): String {
+        val sdf = SimpleDateFormat(format, Locale.getDefault())
+        val date = Date(this)
+        return sdf.format(date)
+    }
+
+    fun String.timestamp(format: String): Long {
+        val formatter = DateTimeFormatter.ofPattern(format)
+        val localDateTime = LocalDateTime.parse(this, formatter)
+        return localDateTime.toEpochSecond(ZoneOffset.UTC)
+    }
+
+    val String.timestamp: Long
+        get() = timestamp(DATE_FORMAT)
 }
 
 expect object MultiplatformIO {
@@ -89,6 +101,11 @@ object ResUtils {
     val DrawableResource.vector
         @Composable
         get() = vectorResource(this)
+
+    val DrawableResource.imgBmp
+        @Composable
+        get() = imageResource(this)
+
     /*    @Composable
     fun (@receiver:DrawableRes Int).painter(useInternalWay: Boolean = true) =
         if (useInternalWay) painterResource(id = this) else this.drawable.painter

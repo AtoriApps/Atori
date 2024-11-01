@@ -1,63 +1,69 @@
-package app.atori.multi
+package app.atori.multi.windows
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
+import app.atori.multi.AtoriMultiTheme
 import app.atori.multi.utils.ResUtils.text
-import app.atori.multi.views.AtoriWindowTitleBar
+import app.atori.multi.views.MainWindowTopBar
+import app.atori.multi.views.panels.MainPanel
+import app.atori.multi.views.panels.SidePanel
 import atorimulti.composeapp.generated.resources.Res
 import atorimulti.composeapp.generated.resources.app_name
 import atorimulti.composeapp.generated.resources.ic_atori_icon
 import atorimulti.composeapp.generated.resources.ic_atori_icon_dark
 import org.jetbrains.compose.resources.painterResource
 
+// 怎么确定只有单例
 @Composable
-fun AtoriMainWindow(appScope: ApplicationScope) {
+fun ApplicationScope.MainWindow() {
     val windowState = rememberWindowState()
     Window(
         state = windowState,
         icon = if (isSystemInDarkTheme()) painterResource(Res.drawable.ic_atori_icon) else painterResource(Res.drawable.ic_atori_icon_dark),
-        onCloseRequest = appScope::exitApplication,
+        onCloseRequest = ::exitApplication,
         title = Res.string.app_name.text,
         undecorated = true,
         transparent = true
     ) {
-        AtoriMainWindowDelegate.setMainWindowInstance(appScope, this@Window, windowState)
+        MainWindowDelegate.setMainWindowInstance(this@MainWindow, this@Window, windowState)
 
         AtoriMultiTheme {
             val rcs17 = RoundedCornerShape(17.dp)
             val rcs0 = RoundedCornerShape(0.dp)
-            Column(
-                // 窗口基本样式
-                Modifier.fillMaxSize()
-                    .clip(if (AtoriMainWindowDelegate.isMaximized) rcs0 else rcs17)
+            Surface(
+                // 窗口基本样式，另外发现这 Surface 和 IconButton 的主题色有关
+                Modifier.fillMaxSize().clip(if (MainWindowDelegate.isMaximized) rcs0 else rcs17)
                     .border(
                         1.dp,
-                        if (AtoriMainWindowDelegate.isMaximized) Color.Transparent else MaterialTheme.colorScheme.outlineVariant,
+                        if (MainWindowDelegate.isMaximized) Color.Transparent else MaterialTheme.colorScheme.outlineVariant,
                         rcs17
                     )
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(if (AtoriMainWindowDelegate.isMaximized) 0.dp else 1.dp)
+                    .padding(if (MainWindowDelegate.isMaximized) 0.dp else 1.dp)
                 // FIXME: 以后限制窗口大小
             ) {
-                AtoriWindowTitleBar()
+                Column(Modifier.fillMaxSize()) {
+                    MainWindowTopBar()
+                    Row(Modifier.fillMaxSize()) {
+                        SidePanel()
+                        MainPanel()
+                    }
+                }
             }
         }
     }
 }
 
-object AtoriMainWindowDelegate {
+object MainWindowDelegate {
     private var ensured = false
 
     private lateinit var mAppScope: ApplicationScope
@@ -65,17 +71,17 @@ object AtoriMainWindowDelegate {
     private lateinit var mWindowState: WindowState
 
     fun setMainWindowInstance(appScope: ApplicationScope, windowScope: FrameWindowScope, windowState: WindowState) {
-        /*if (ensured) {
-            println("防抖")
-            return
-        } else {*/
-        mAppScope = appScope
-        mWindowScope = windowScope
-        mWindowState = windowState
-
-        println("窗口实例已设置")
-        ensured = true
-        /*}*/
+        runCatching {
+            mAppScope = appScope
+            mWindowScope = windowScope
+            mWindowState = windowState
+        }.onSuccess {
+            println("窗口绑定正确")
+            ensured = true
+        }.onFailure {
+            println("窗口绑定错误\n${it.stackTraceToString()}")
+            ensured = false
+        }
     }
 
     fun close() = ensureWindow {
@@ -83,7 +89,7 @@ object AtoriMainWindowDelegate {
     }
 
     private fun <T> ensureWindow(block: () -> T): T =
-        if (ensured) block() else throw IllegalStateException("窗口实例缺失")
+        if (ensured) block() else throw IllegalStateException("窗口绑定异常")
 
     val windowScope: FrameWindowScope
         get() = ensureWindow { mWindowScope }

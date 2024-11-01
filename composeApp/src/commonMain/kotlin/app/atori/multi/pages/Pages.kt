@@ -1,6 +1,7 @@
 package app.atori.multi.pages
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,25 +13,103 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import app.atori.multi.AtoriMultiTheme
+import app.atori.multi.components.ElegantEditableLabel
 import app.atori.multi.components.MsgItem
+import app.atori.multi.entities.DemoChatEntity
 import app.atori.multi.filledButtonColors
 import app.atori.multi.utils.ComposeUtils.paddingForSystemBars
+import app.atori.multi.utils.ResUtils.imgBmp
 import app.atori.multi.utils.ResUtils.text
 import app.atori.multi.utils.ResUtils.vector
 import app.atori.multi.utils.TimestampUtils.timeStr
+import app.atori.multi.utils.TimestampUtils.timestamp
 import app.atori.multi.viewModels.XmppViewModel
 import atorimulti.composeapp.generated.resources.*
 import atorimulti.composeapp.generated.resources.Res
 import atorimulti.composeapp.generated.resources.app_name
 import atorimulti.composeapp.generated.resources.ic_atori_logo_24px
 import atorimulti.composeapp.generated.resources.ic_chat_24px
-import org.jetbrains.compose.ui.tooling.preview.Preview
+
+@Composable
+fun ChatsPage() {
+    Column(Modifier.fillMaxSize().padding(12.dp)) {
+        val demoConversations = listOf(
+            DemoChatEntity(
+                Res.drawable.img_avatar_demo,
+                "Y. Law",
+                "❤",
+                "2024-11-01 11:45:14".timestamp,
+                5,
+                true, false
+            ),
+            DemoChatEntity(
+                Res.drawable.img_avatar_demo,
+                "Earzu Chan",
+                "还可以",
+                "2024-11-01 11:45:14".timestamp,
+                10,
+                false, false
+            )
+        )
+
+        var demoCurrentChat by remember { mutableStateOf(-1) }
+
+        ElegantEditableLabel()
+        Column(Modifier.fillMaxSize(), Arrangement.spacedBy(2.dp)) {
+            demoConversations.forEachIndexed { index, chat ->
+                ChatsPageChatItem(chat, index == demoCurrentChat) { demoCurrentChat = index }
+            }
+        }
+    }
+}
+
+@Composable
+fun ChatsPageChatItem(demoChatEntity: DemoChatEntity, isCurrent: Boolean, onClick: () -> Unit) {
+    Row(
+        Modifier.fillMaxWidth()
+            .clip(MaterialTheme.shapes.large)
+            .background(if (isCurrent) MaterialTheme.colorScheme.primaryContainer else Color.Transparent)
+            .clickable(onClick = onClick).padding(12.dp),
+        Arrangement.spacedBy(16.dp)
+    ) {
+        Image(demoChatEntity.avatar.imgBmp, demoChatEntity.name, Modifier.size(40.dp).clip(CircleShape))
+        Column(Modifier.weight(1F)) {
+            Text(
+                demoChatEntity.name,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                demoChatEntity.lastMessage,
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+        Column(/*Modifier.wrapContentHeight(),*/horizontalAlignment = Alignment.End) {
+            Column(Modifier/*.weight(1F) FIXME: 这里不能用weight1*/, Arrangement.spacedBy(4.dp), Alignment.End) {
+                Text(
+                    demoChatEntity.timestamp.timeStr("HH:mm"),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                if (demoChatEntity.unreadCount > 0) Badge { Text(demoChatEntity.unreadCount.toString()) }
+            }
+            Row {
+                // TODO: 聊天状态指示器
+            }
+        }
+    }
+}
+
+// All disposed below
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

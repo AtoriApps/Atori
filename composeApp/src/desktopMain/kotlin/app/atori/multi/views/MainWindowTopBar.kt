@@ -7,21 +7,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import app.atori.multi.AtoriMainWindowDelegate
-import app.atori.multi.standardIconButtonColors
+import app.atori.multi.windows.MainWindowDelegate
 import app.atori.multi.utils.ResUtils.vector
 import atorimulti.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.DrawableResource
 
 @Composable
-fun AtoriWindowTitleBar() {
-    AtoriMainWindowDelegate.windowScope.WindowDraggableArea {
+fun MainWindowTopBar() {
+    MainWindowDelegate.windowScope.WindowDraggableArea {
         Row(Modifier.fillMaxWidth().height(56.dp)) {
             Box(Modifier.fillMaxHeight().width(64.dp)) {
                 Icon(
                     Res.drawable.ic_atori_logo_24px.vector,
                     "Atori",
-                    Modifier.align(Alignment.Center),
+                    Modifier.size(24.dp).align(Alignment.Center),
                     MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
@@ -32,20 +31,20 @@ fun AtoriWindowTitleBar() {
                     }
                 }
                 Row {
-                    AtoriAppBarControlButton({}, Res.drawable.ic_search_24px, "Search")
-                    AtoriAppBarControlButton(
-                        { AtoriMainWindowDelegate.isMinimized = true },
+                    MainWindowTopBarControlButton({}, Res.drawable.ic_search_24px, "Search")
+                    MainWindowTopBarControlButton(
+                        { MainWindowDelegate.isMinimized = true },
                         Res.drawable.ic_minimize_24px,
                         "Minimize"
                     )
-                    AtoriAppBarControlButton(
+                    MainWindowTopBarControlButton(
                         {
-                            AtoriMainWindowDelegate.isMaximized = !AtoriMainWindowDelegate.isMaximized
+                            MainWindowDelegate.isMaximized = !MainWindowDelegate.isMaximized
                         },
-                        if (AtoriMainWindowDelegate.isMaximized) Res.drawable.ic_leave_fullscreen_24px else Res.drawable.ic_fullscreen_24px,
+                        if (MainWindowDelegate.isMaximized) Res.drawable.ic_leave_fullscreen_24px else Res.drawable.ic_fullscreen_24px,
                         "Maximize/Restore"
                     )
-                    AtoriAppBarControlButton({ AtoriMainWindowDelegate.close() }, Res.drawable.ic_close_24px, "Close")
+                    MainWindowTopBarControlButton({ MainWindowDelegate.close() }, Res.drawable.ic_close_24px, "Close")
                 }
             }
         }
@@ -53,8 +52,9 @@ fun AtoriWindowTitleBar() {
 }
 
 @Composable
-fun AtoriAppBarControlButton(onClick: () -> Unit, icon: DrawableResource, contentDescription: String) {
-    IconButton(onClick, Modifier.size(48.dp), true, standardIconButtonColors) {
+fun MainWindowTopBarControlButton(onClick: () -> Unit, icon: DrawableResource, contentDescription: String) {
+    // IconButton的主题色必须套在Surface里才能生效
+    IconButton(onClick, Modifier.size(48.dp), true) {
         Icon(icon.vector, contentDescription, Modifier)
     }
 }
