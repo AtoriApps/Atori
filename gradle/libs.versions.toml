@@ -3,20 +3,20 @@ kotlin = "2.0.20" # 语言版本
 kotlinx-coroutines = "1.8.1" # Kotlin 协程版本
 ksp = "2.0.20-1.0.25" # Kotlin 符号处理器 版本：语言版本-KSP版本
 
-agp = "8.5.2" # 安卓 Gradle 插件版本
+agp = "8.2.2" # 安卓 Gradle 插件版本
 
 android-compileSdk = "34" # 安卓编译SDK版本：安卓14
 android-targetSdk = "34" # 安卓目标SDK版本：安卓14
 android-minSdk = "24" # 安卓最小SDK版本：安卓7
 
 androidx-appcompat = "1.7.0" # 安卓X APP兼容 版本：我们用稳定版，检查更新：https://developer.android.google.cn/jetpack/androidx/releases/appcompat
-androidx-core-ktx = "1.15.0" # 安卓X 核心KTX 版本：我们用稳定版，检查更新：https://developer.android.google.cn/jetpack/androidx/releases/core
+androidx-core-ktx = "1.13.1" # 安卓X 核心KTX 版本：我们用稳定版，检查更新：https://developer.android.google.cn/jetpack/androidx/releases/core
 
 jetpack-compose = "1.7.0" # Compose Multiplatform 版本：我们用稳定版，检查更新：https://github.com/jetbrains/compose-multiplatform/releases
 
 navigationCompose = "2.8.0-alpha10" # Compose导航库 版本：我们用 Compose Multiplatform 要求的版本
 androidx-lifecycle = "2.8.3"# 安卓X 生命周期 版本：我们用 Compose Multiplatform 要求的版本
-androidx-activityCompose = "1.9.3" # 安卓X Compose活动 版本：我们用稳定版，检查更新：https://developer.android.google.cn/jetpack/androidx/releases/activity
+androidx-activityCompose = "1.9.2" # 安卓X Compose活动 版本：我们用稳定版，检查更新：https://developer.android.google.cn/jetpack/androidx/releases/activity
 
 smackVersion = "4.5.0-beta5" # Smack 版本：我们用开发版（为了支持Java11），检查更新：https://igniterealtime.org/projects/smack/
 

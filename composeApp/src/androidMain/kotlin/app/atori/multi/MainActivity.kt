@@ -27,3 +27,12 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
+@Preview
+@Composable
+fun CanOnlyPreviewHere() {
+    // 另外，咱不知道是咱的问题还是它的问题，导致默认主题的IconButton颜色和水波颜色都不对
+    IconButton(onClick = { /* doSomething() */ }) {
+        Icon(Res.drawable.ic_atori_logo_24px.vector, contentDescription = "Localized description")
+    }
+}
