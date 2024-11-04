@@ -7,12 +7,12 @@
             android:icon="@drawable/ic_launcher"
             android:label="@string/app_name"
             android:supportsRtl="true"
-            android:name=".AndroidPackage"
+            android:name="app.atori.misc.AndroidApplication"
             android:theme="@android:style/Theme.Material.Light.NoActionBar">
         <activity
                 android:exported="true"
                 android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|mnc|colorMode|density|fontScale|fontWeightAdjustment|keyboard|layoutDirection|locale|mcc|navigation|smallestScreenSize|touchscreen|uiMode"
-                android:name=".MainActivity">
+                android:name="app.atori.misc.AndroidActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

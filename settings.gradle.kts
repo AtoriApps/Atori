@@ -1,4 +1,4 @@
-rootProject.name = "AtoriMulti"
+rootProject.name = "Atori"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {

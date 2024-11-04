@@ -7,9 +7,9 @@ import java.util.*
 // 版本代码是yyyyMMdd动态生成
 val verCode = SimpleDateFormat("yyyyMMdd").format(Date()).toInt()
 // 当实现计划时记得撞♂版本号
-val verName = "0.0.2"
+val verName = "0.0.3"
 // 包名
-val appId = "app.atori.multi"
+val appId = "app.atori"
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -28,7 +28,7 @@ kotlin {
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_17)
         }
     }
 
@@ -38,8 +38,6 @@ kotlin {
         val desktopMain by getting
 
         androidMain.dependencies {
-            implementation(compose.preview)
-
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.appcompat)
             implementation(libs.androidx.core.ktx)
@@ -53,6 +51,7 @@ kotlin {
             implementation(compose.components.resources)
             implementation(libs.compose.navigation)
             implementation(compose.components.uiToolingPreview)
+            implementation(compose.preview)
             implementation(compose.uiTooling)
 
             implementation(libs.androidx.lifecycle.runtime.compose)
@@ -111,8 +110,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     buildFeatures {
@@ -132,9 +131,15 @@ android {
     }
 }
 
+compose.resources{
+    publicResClass = false
+    packageOfResClass = "$appId.resources"
+    generateResClass = auto
+}
+
 compose.desktop {
     application {
-        mainClass = "$appId.MainKt"
+        mainClass = "$appId.InitAppKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Exe)

@@ -1,4 +1,4 @@
-# Test Multi by Atori App
+# Atori
 
 With love and peace, enjoy the app.
 
