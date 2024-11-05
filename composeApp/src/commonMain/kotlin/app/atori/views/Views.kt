@@ -15,7 +15,7 @@ import app.atori.resources.ic_atori_logo_24px
 import org.jetbrains.compose.resources.DrawableResource
 
 @Composable
-fun TopBarAtoriIcon(){
+fun TopBarAtoriIcon() {
     Icon(
         Res.drawable.ic_atori_logo_24px.vector,
         "Atori",
@@ -26,16 +26,21 @@ fun TopBarAtoriIcon(){
 }
 
 @Composable
-fun TopBarControlButton(icon: DrawableResource, contentDescription: String, onClick: () -> Unit = {}) {
-    // IconButton的主题色必须套在Surface里才能生效
+fun TopBarControlButton(icon: DrawableResource, contentDescription: String, onClick: () -> Unit = {}) =
+    TopBarControlButton(onClick) {
+        Icon(
+            icon.vector,
+            contentDescription,
+        )
+    }
+
+@Composable
+fun TopBarControlButton(onClick: () -> Unit = {}, content: @Composable () -> Unit = {}) {
     Button(
         onClick, Modifier.size(48.dp),
         contentPadding = PaddingValues(0.dp),
         colors = standardIconButtonColors,
     ) {
-        Icon(
-            icon.vector,
-            contentDescription,
-        )
+        content()
     }
 }

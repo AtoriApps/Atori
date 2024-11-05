@@ -42,9 +42,9 @@ fun MainWindow(appScope: ApplicationScope) {
             val rcs17 = RoundedCornerShape(17.dp)
             val rcs0 = RoundedCornerShape(0.dp)
 
-            Column(
-                // 窗口基本样式，另外发现这 Surface 和 IconButton 的主题色有关
+            Surface(
                 Modifier.fillMaxSize()
+                    // 窗口基本样式，另外发现这 Surface 和 IconButton 的主题色有关
                     .clip(if (MainWindowDelegate.isMaximized) rcs0 else rcs17)
                     .background(MaterialTheme.colorScheme.surface)
                     .border(
@@ -55,10 +55,14 @@ fun MainWindow(appScope: ApplicationScope) {
                     .padding(if (MainWindowDelegate.isMaximized) 0.dp else 1.dp)
                 // FIXME: 以后限制窗口大小
             ) {
-                MainWindowTopBar()
-                Row(Modifier.fillMaxSize()) {
-                    SidePanel()
-                    MainPanel()
+                Column(
+                    Modifier.fillMaxSize()
+                ) {
+                    MainWindowTopBar()
+                    Row(Modifier.fillMaxSize()) {
+                        SidePanel()
+                        MainPanel()
+                    }
                 }
             }
         }

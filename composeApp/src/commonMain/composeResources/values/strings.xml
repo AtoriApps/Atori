@@ -1,6 +1,17 @@
 <resources>
-    <string name="app_name">Atori Multi</string>
+    <string name="app_name">Atori</string>
     <string name="click_2_send">Click To Send</string>
     <string name="connecting">Connecting</string>
-    <string name="new_chat">New Chat</string>
+    <string name="new_chat">New chat</string>
+    <string name="about_summary">by Atori Apps</string>
+    <string name="about_extra">哈哈，你想看 存储库 吗\n怎么，你不 关注 吗</string>
+    <string name="add_contact">Add contact</string>
+    <string name="scan">Scan</string>
+    <string name="file_transfer">File Transfer</string>
+    <string name="num_accounts">%s accounts</string>
+    <string name="manage_accounts">Manage accounts</string>
+    <string name="archived_spam_blocked_etc">Archived, spam &amp; blocked, etc.</string>
+    <string name="settings">Settings</string>
+    <string name="help_feedback">Help &amp; feedback</string>
+    <string name="close_atori">Close Atori</string>
 </resources>

@@ -1,4 +1,7 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.compose.internal.com.squareup.kotlinpoet.FileSpec
+import org.jetbrains.compose.internal.com.squareup.kotlinpoet.PropertySpec
+import org.jetbrains.compose.internal.com.squareup.kotlinpoet.TypeSpec
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.text.SimpleDateFormat
@@ -10,6 +13,8 @@ val verCode = SimpleDateFormat("yyyyMMdd").format(Date()).toInt()
 val verName = "0.0.3"
 // 包名
 val appId = "app.atori"
+
+val myGeneratedCodeDir = "generated/source/buildConstants"
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -36,6 +41,10 @@ kotlin {
 
     sourceSets {
         val desktopMain by getting
+
+        val commonMain by getting {
+            kotlin.srcDir("build/$myGeneratedCodeDir")
+        }
 
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)
@@ -80,6 +89,41 @@ kotlin {
 dependencies {
     add("kspAndroid", libs.androidx.room.compiler)
     add("kspDesktop", libs.androidx.room.compiler)
+}
+
+val generateBuildConstants = tasks.register("generateBuildConstants") {
+    val outputDir = File(buildDir, myGeneratedCodeDir)
+    val constClzName = "BuildConstants"
+
+    outputs.dir(outputDir)
+
+    doLast {
+        // 创建 Kotlin 文件
+        val buildConfigClass = TypeSpec.objectBuilder(constClzName)
+            .addProperty(
+                PropertySpec.builder("VERSION_NAME", String::class)
+                    .initializer("%S", verName)
+                    .build()
+            ).addProperty(
+                PropertySpec.builder("VERSION_CODE", Int::class)
+                    .initializer("%L", verCode)
+                    .build()
+            )
+            .build()
+
+        // 生成文件
+        val file = FileSpec.builder(appId, "BuildConstants")
+            .addType(buildConfigClass)
+            .build()
+
+        outputDir.mkdirs()
+        file.writeTo(outputDir)
+    }
+}
+
+// 确保生成任务在编译时执行
+tasks.named("assemble").configure {
+    dependsOn(generateBuildConstants)
 }
 
 android {
@@ -131,7 +175,7 @@ android {
     }
 }
 
-compose.resources{
+compose.resources {
     publicResClass = false
     packageOfResClass = "$appId.resources"
     generateResClass = auto
