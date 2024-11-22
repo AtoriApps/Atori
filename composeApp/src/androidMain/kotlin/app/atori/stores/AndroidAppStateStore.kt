@@ -12,14 +12,15 @@ object AndroidAppStateStore {
     fun init(context: Context) {
         appContext = context
 
-        runCatching { AndroidSmackInitializer.initialize(appContext) }
-            .onSuccess {
-                inited = true
-                println("安卓初始化成功")
-            }.onFailure {
-                println("安卓初始化失败\n${it.stackTraceToString()}")
-                inited = false
-            }
+        runCatching {
+            AndroidSmackInitializer.initialize(appContext)
+        }.onSuccess {
+            inited = true
+            println("安卓初始化成功")
+        }.onFailure {
+            println("安卓初始化失败\n${it.stackTraceToString()}")
+            inited = false
+        }
     }
 
     private fun <T> ensureInited(block: () -> T): T =

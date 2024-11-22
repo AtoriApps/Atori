@@ -4,7 +4,7 @@ kotlinpoet = "1.14.2"
 kotlinx-coroutines = "1.8.1" # Kotlin 协程版本
 ksp = "2.0.20-1.0.25" # Kotlin 符号处理器 版本：语言版本-KSP版本
 
-agp = "8.5.2" # 安卓 Gradle 插件版本
+agp = "8.7.2" # 安卓 Gradle 插件版本
 
 android-compileSdk = "35" # 安卓编译SDK版本：安卓15
 android-targetSdk = "35" # 安卓目标SDK版本：安卓15
@@ -32,7 +32,6 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 androidx-lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
-kotlinpoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinpoet" }
 kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 compose-navigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 smack-jvm = { module = "org.igniterealtime.smack:smack-java11", version.ref = "smackVersion" }

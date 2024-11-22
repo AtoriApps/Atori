@@ -14,6 +14,6 @@ fun AtoriApp() {
         viewModel { XmppViewModel(MultiplatformIO.getAtoriDbBuilder().buildDb()) }
 
     AtoriTheme {
-        AtoriMultiNavHost(navi, xmppViewModel)
+        AtoriNavHost(navi, xmppViewModel)
     }
 }

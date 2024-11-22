@@ -37,3 +37,32 @@ data class NavTabItem(
     val name: String,
     val view: @Composable () -> Unit
 )
+
+enum class DemoMessageType {
+    FIRST_MESSAGE,
+    HEADLESS,
+    READ_TO_HERE,
+    TIME_LINE,
+    REPLY,
+}
+
+enum class DemoMessageBodyType {
+    NONE,
+    TEXT,
+    IMAGE
+}
+
+data class DemoMessageReactionEntity(
+    val emoji: String,
+    val count: Int = 1,
+    val useClicked: Boolean = false
+)
+
+data class DemoMessageEntity(
+    // val fromNpc: Boolean = false,
+    val messageBodyData: Any?,
+    val timestamp: Long,
+    val messageType: DemoMessageType,
+    val messageBodyType: DemoMessageBodyType = DemoMessageBodyType.NONE,
+    val reactions: List<DemoMessageReactionEntity> = emptyList()
+)

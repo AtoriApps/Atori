@@ -4,7 +4,7 @@
     <string name="connecting">Connecting</string>
     <string name="new_chat">New chat</string>
     <string name="about_summary">by Atori Apps</string>
-    <string name="about_extra">哈哈，你想看 存储库 吗\n怎么，你不 关注 吗</string>
+    <string name="about_extra">Our Dear Moments</string>
     <string name="add_contact">Add contact</string>
     <string name="scan">Scan</string>
     <string name="file_transfer">File Transfer</string>
@@ -14,4 +14,8 @@
     <string name="settings">Settings</string>
     <string name="help_feedback">Help &amp; feedback</string>
     <string name="close_atori">Close Atori</string>
+    <string name="empty_page">Empty page</string>
+    <string name="reply_arrow">Reply arrow</string>
+    <string name="read_to_here">The other party has read to here</string>
+    <string name="add_reaction">Add reaction</string>
 </resources>

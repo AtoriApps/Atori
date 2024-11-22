@@ -106,7 +106,7 @@ val surfaceContainerDark = Color(0xFF261D1F)
 val surfaceContainerHighDark = Color(0xFF312829)
 val surfaceContainerHighestDark = Color(0xFF3C3234)
 
-val testMultiDarkColorScheme = darkColorScheme(
+val atoriDarkColorScheme = darkColorScheme(
     primary = primaryDark,
     onPrimary = onPrimaryDark,
     primaryContainer = primaryContainerDark,
@@ -144,7 +144,7 @@ val testMultiDarkColorScheme = darkColorScheme(
     surfaceContainerHighest = surfaceContainerHighestDark,
 )
 
-val testMultiLightColorScheme = lightColorScheme(
+val atoriLightColorScheme = lightColorScheme(
     primary = primaryLight,
     onPrimary = onPrimaryLight,
     primaryContainer = primaryContainerLight,
@@ -188,8 +188,8 @@ fun AtoriTheme(
     useDarkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colors = if (useDarkTheme) testMultiDarkColorScheme
-    else testMultiLightColorScheme
+    val colors = if (useDarkTheme) atoriDarkColorScheme
+    else atoriLightColorScheme
 
     MaterialTheme(
         colorScheme = colors, // 颜色

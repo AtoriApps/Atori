@@ -63,6 +63,8 @@ object TimestampUtils {
 
 expect object MultiplatformIO {
     fun getAtoriDbBuilder(): RoomDatabase.Builder<AtoriDatabase>
+
+    internal fun maybeHover(modifier: Modifier, hoverHandler: ComposeUtils.HoverHandler): Modifier
 }
 
 // TODO: 实现一个通用Log工具？
@@ -97,6 +99,16 @@ object ComposeUtils {
     @Composable
     fun Modifier.paddingForSystemBars(): Modifier =
         Modifier.padding(WindowInsets.systemBars.asPaddingValues())
+
+    fun Modifier.maybeHover(hoverHandler: HoverHandler): Modifier {
+        return MultiplatformIO.maybeHover(this, hoverHandler)
+    }
+
+    open class HoverHandler {
+        open fun onEnter(): Boolean = false
+
+        open fun onExit(): Boolean = false
+    }
 }
 
 object ResUtils {

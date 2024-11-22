@@ -1,5 +1,10 @@
 package app.atori.utils
 
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.PointerEventType
+import androidx.compose.ui.input.pointer.onPointerEvent
+import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import app.atori.databases.AtoriDatabase
@@ -13,4 +18,12 @@ actual object MultiplatformIO {
             name = dbFile.absolutePath,
         )
     }
+
+    @OptIn(ExperimentalComposeUiApi::class)
+    actual fun maybeHover(modifier: Modifier, hoverHandler: ComposeUtils.HoverHandler): Modifier =
+        modifier.onPointerEvent(PointerEventType.Enter) {
+            hoverHandler.onEnter()
+        }.onPointerEvent(PointerEventType.Exit) {
+            hoverHandler.onExit()
+        }
 }

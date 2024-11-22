@@ -20,4 +20,6 @@ object UniversalStateStore {
     )
 
     val currentNavTab = mutableStateOf(0)
+
+    val demoCurrentChat = mutableStateOf(-1)
 }

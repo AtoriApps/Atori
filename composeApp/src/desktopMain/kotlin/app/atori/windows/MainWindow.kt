@@ -55,6 +55,7 @@ fun MainWindow(appScope: ApplicationScope) {
                     .padding(if (MainWindowDelegate.isMaximized) 0.dp else 1.dp)
                 // FIXME: 以后限制窗口大小
             ) {
+                // 窗口主骨架
                 Column(
                     Modifier.fillMaxSize()
                 ) {
@@ -69,6 +70,7 @@ fun MainWindow(appScope: ApplicationScope) {
     }
 }
 
+// 以后为了解耦可能还需要抽成单独的Window函数然后里面自管自己的窗口状态
 object MainWindowDelegate {
     private var ensured = false
 

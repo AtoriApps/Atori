@@ -20,7 +20,7 @@ const val DestChat = "chat"
 const val DestLogin = "login"
 
 @Composable
-fun AtoriMultiNavHost(navi: NavHostController, xmppViewModel: XmppViewModel) {
+fun AtoriNavHost(navi: NavHostController, xmppViewModel: XmppViewModel) {
     val noAccount by xmppViewModel.noAccount.collectAsState(initial = false)
 
     LaunchedEffect(noAccount) {

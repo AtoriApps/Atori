@@ -38,7 +38,7 @@ fun DialogBase(onDismissRequest: () -> Unit = {}, content: @Composable () -> Uni
 
 @Composable
 fun OneAtoriDialog(showAboutAction: () -> Unit = {}) =
-    Column(Modifier.padding(vertical = 8.dp), Arrangement.spacedBy(2.dp)) {
+    Column(Modifier.padding(vertical = 8.dp), Arrangement.spacedBy(8.dp)) {
         @Composable
         fun ListItem(
             icon: DrawableResource,
@@ -50,9 +50,15 @@ fun OneAtoriDialog(showAboutAction: () -> Unit = {}) =
             Row(
                 Modifier.height(IntrinsicSize.Min).fillMaxWidth().clickable(onClick = onClick)
                     .padding(if (exPaddin) 32.dp else 24.dp, 12.dp),
-                Arrangement.spacedBy(16.dp)
+                Arrangement.spacedBy(16.dp),
+                Alignment.CenterVertically
             ) {
-                Icon(icon.vector, title, Modifier.size(24.dp), MaterialTheme.colorScheme.onSurfaceVariant)
+                Icon(
+                    icon.vector,
+                    title,
+                    Modifier.size(24.dp),
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                )
                 Text(
                     title,
                     Modifier.weight(1F),
@@ -62,39 +68,47 @@ fun OneAtoriDialog(showAboutAction: () -> Unit = {}) =
                 content()
             }
 
-        // 上半
-        Column(
-            Modifier.padding(horizontal = 8.dp).fillMaxWidth()
-                .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
-                .background(MaterialTheme.colorScheme.surfaceContainerLow)
-        ) {
-            ListItem(Res.drawable.ic_atori_logo_24px, Res.string.add_contact.text)
-            ListItem(Res.drawable.ic_atori_logo_24px, Res.string.scan.text)
-            ListItem(Res.drawable.ic_atori_logo_24px, Res.string.file_transfer.text)
-        }
+        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            // 上半
+            Column(
+                Modifier.padding(horizontal = 8.dp).fillMaxWidth()
+                    .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
+                    .background(MaterialTheme.colorScheme.surfaceContainerLow)
+            ) {
+                ListItem(Res.drawable.ic_atori_logo_24px, Res.string.add_contact.text)
+                ListItem(Res.drawable.ic_atori_logo_24px, Res.string.scan.text)
+                ListItem(Res.drawable.ic_atori_logo_24px, Res.string.file_transfer.text)
+            }
 
-        // 中间
-        Column(
-            Modifier.padding(horizontal = 8.dp).fillMaxWidth().background(MaterialTheme.colorScheme.surfaceContainerLow)
-        ) {
-            // TODO: 下拉展示账号
-            ListItem(Res.drawable.ic_atori_logo_24px, Res.string.num_accounts.text("0"))
-        }
+            // 中间
+            Column(
+                Modifier.padding(horizontal = 8.dp).fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.surfaceContainerLow)
+            ) {
+                // TODO: 下拉展示账号
+                ListItem(Res.drawable.ic_atori_logo_24px, Res.string.num_accounts.text("0"))
+            }
 
-        // 下半
-        Column(
-            Modifier.padding(horizontal = 8.dp).fillMaxWidth()
-                .clip(RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
-                .background(MaterialTheme.colorScheme.surfaceContainerLow)
-        ) {
-            ListItem(Res.drawable.ic_atori_logo_24px, Res.string.archived_spam_blocked_etc.text)
+            // 下半
+            Column(
+                Modifier.padding(horizontal = 8.dp).fillMaxWidth()
+                    .clip(RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
+                    .background(MaterialTheme.colorScheme.surfaceContainerLow)
+            ) {
+                ListItem(Res.drawable.ic_atori_logo_24px, Res.string.archived_spam_blocked_etc.text)
+            }
         }
 
         // 无边框
         Column(Modifier.fillMaxWidth()) {
             ListItem(Res.drawable.ic_atori_logo_24px, Res.string.settings.text, true)
             ListItem(Res.drawable.ic_atori_logo_24px, Res.string.help_feedback.text, true)
-            ListItem(Res.drawable.ic_atori_logo_24px, Res.string.close_atori.text, true, showAboutAction)
+            ListItem(
+                Res.drawable.ic_atori_logo_24px,
+                Res.string.close_atori.text,
+                true,
+                showAboutAction
+            )
         }
     }
 
@@ -105,11 +119,17 @@ fun AboutDialog(isDarkMode: Boolean = isSystemInDarkTheme()) =
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                (if (isDarkMode) Res.drawable.ic_atori_icon_dark else Res.drawable.ic_atori_icon).vector,
-                "App Icon",
+            Box(
                 Modifier.size(48.dp).clip(MaterialTheme.shapes.medium)
-            )
+                    .background(MaterialTheme.colorScheme.primary), Alignment.Center
+            ) {
+                Icon(
+                    Res.drawable.ic_atori_logo_24px.vector,
+                    Res.string.app_name.text,
+                    Modifier.size(32.dp),
+                    MaterialTheme.colorScheme.onPrimary
+                )
+            }
             Column {
                 Text(
                     Res.string.app_name.text,
@@ -117,7 +137,7 @@ fun AboutDialog(isDarkMode: Boolean = isSystemInDarkTheme()) =
                     color = MaterialTheme.colorScheme.primary
                 )
                 Text(
-                    Res.string.about_summary.text(BuildConstants.VERSION_NAME),
+                    "${Res.string.about_summary.text}\n${BuildConstants.VERSION_NAME}",
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface
                 )

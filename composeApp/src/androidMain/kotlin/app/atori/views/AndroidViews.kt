@@ -43,7 +43,7 @@ fun MainScreenTopBar() {
             .background(MaterialTheme.colorScheme.surfaceContainer)
             .windowInsetsPadding(TopAppBarDefaults.windowInsets)
             .height(64.dp)
-            .padding(horizontal = 4.dp)
+            .padding(horizontal = 8.dp)
     ) {
         // 左侧内容
         Row(Modifier.align(Alignment.CenterStart)) {
@@ -92,7 +92,7 @@ fun MainScreenBottomBar() = NavigationBar {
             label = { Text(item.name) },
             selected = UniversalStateStore.currentNavTab.value == index,
             onClick = { UniversalStateStore.currentNavTab.value = index },
-            alwaysShowLabel = UniversalStateStore.currentNavTab.value == index
+            alwaysShowLabel = false
         )
     }
 }
