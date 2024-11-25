@@ -62,11 +62,11 @@ fun MainScreenTopBar() {
 
         // 右侧内容
         Row(Modifier.align(Alignment.CenterEnd)) {
-            TopBarControlButton(Res.drawable.ic_search_24px, "Search") {}
+            AIconButton(Res.drawable.ic_search_24px, "Search", 48) {}
 
-            TopBarControlButton({
+            AIconButton({
                 showOneAtori = true
-            }) {
+            }, 48) {
                 Image(
                     Res.drawable.img_avatar_demo.imgBmp,
                     "One Atori",

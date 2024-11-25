@@ -51,8 +51,8 @@ import app.atori.resources.ic_chat_24px
 import app.atori.stores.UniversalStateStore.demoCurrentChat
 import app.atori.utils.ComposeUtils
 import app.atori.utils.ComposeUtils.maybeHover
-import app.atori.views.IconChip
-import app.atori.views.IconStringChip
+import app.atori.components.IconChip
+import app.atori.components.IconStringChip
 import org.jetbrains.compose.resources.DrawableResource
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -120,7 +120,6 @@ fun DemoChatPage() {
         )
         TheLine(lineModifier)
     }
-
 
     @Composable
     fun ReadToHereBlock() = Row(
@@ -322,6 +321,39 @@ fun DemoChatPage() {
 }
 
 @Composable
+fun DemoChatInfoPage() = LazyColumn(
+    Modifier.fillMaxSize(), contentPadding = PaddingValues(vertical = 16.dp),
+    verticalArrangement = Arrangement.spacedBy(16.dp)
+) {
+    // Status
+    item {
+        Row(
+            Modifier.padding(horizontal = 24.dp), Arrangement.spacedBy(16.dp),
+            Alignment.CenterVertically
+        ) {
+            Image(
+                DemoData.userAvatar, DemoData.userName,
+                Modifier.size(80.dp).clip(CircleShape)
+            )
+            Column(Modifier.weight(1F)) {
+                Text(
+                    DemoData.userName,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Text(
+                    "${Res.string.online.text} • ${Res.string.last_seen_recently.text}",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.labelLarge
+                )
+            }
+        }
+    }
+
+    // Settings
+}
+
+@Composable
 fun EmptyPage() {
     Box(Modifier.fillMaxSize(), Alignment.Center) {
         Icon(
@@ -335,9 +367,17 @@ fun EmptyPage() {
 @Composable
 fun ChatsPage() {
     @Composable
-    fun ChatsPageChatItem(demoChatEntity: DemoChatEntity, isCurrent: Boolean, onClick: () -> Unit) {
+    fun ChatsPageChatItem(
+        demoChatEntity: DemoChatEntity,
+        isCurrent: Boolean,
+        onClick: () -> Unit
+    ) {
         @Composable
-        fun ChatsPageChatItemStateIcon(icon: DrawableResource, name: String, isCurrent: Boolean) {
+        fun ChatsPageChatItemStateIcon(
+            icon: DrawableResource,
+            name: String,
+            isCurrent: Boolean
+        ) {
             Icon(
                 icon.vector,
                 name,
@@ -384,11 +424,19 @@ fun ChatsPage() {
 
                 Row {
                     if (demoChatEntity.pinned) {
-                        ChatsPageChatItemStateIcon(Res.drawable.ic_pinned_20px, "Pinned", isCurrent)
+                        ChatsPageChatItemStateIcon(
+                            Res.drawable.ic_pinned_20px,
+                            "Pinned",
+                            isCurrent
+                        )
 
                     }
                     if (demoChatEntity.muted) {
-                        ChatsPageChatItemStateIcon(Res.drawable.ic_muted_20px, "Muted", isCurrent)
+                        ChatsPageChatItemStateIcon(
+                            Res.drawable.ic_muted_20px,
+                            "Muted",
+                            isCurrent
+                        )
                     }
                     when (demoChatEntity.sendState) {
                         1 -> ChatsPageChatItemStateIcon(
@@ -477,7 +525,13 @@ fun OverviewPage(xmppViewModel: XmppViewModel) {
         Modifier,
         {
             TopAppBar(
-                { Text(Res.string.app_name.text, maxLines = 1, overflow = TextOverflow.Ellipsis) },
+                {
+                    Text(
+                        Res.string.app_name.text,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                },
                 Modifier,
                 {
                     Box(Modifier.size(48.dp), Alignment.Center) {

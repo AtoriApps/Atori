@@ -10,6 +10,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import app.atori.components.AIconButton
+import app.atori.components.TopBarAtoriIcon
 import app.atori.windows.MainWindowDelegate
 import app.atori.resources.*
 import app.atori.utils.ResUtils.imgBmp
@@ -45,11 +47,11 @@ fun MainWindowTopBar() {
                     }
                 }
                 Row {
-                    TopBarControlButton(Res.drawable.ic_search_24px, "Search") {}
+                    AIconButton(Res.drawable.ic_search_24px, "Search", 48) {}
 
-                    TopBarControlButton({
+                    AIconButton({
                         showOneAtori = true
-                    }) {
+                    }, 48) {
                         Image(
                             Res.drawable.img_avatar_demo.imgBmp,
                             "One Atori",
@@ -57,19 +59,19 @@ fun MainWindowTopBar() {
                         )
                     }
 
-                    TopBarControlButton(
+                    AIconButton(
                         Res.drawable.ic_minimize_24px,
-                        "Minimize"
+                        "Minimize", 48
                     ) { MainWindowDelegate.isMinimized = true }
 
-                    TopBarControlButton(
+                    AIconButton(
                         if (MainWindowDelegate.isMaximized) Res.drawable.ic_leave_fullscreen_24px else Res.drawable.ic_fullscreen_24px,
-                        "Maximize/Restore"
+                        "Maximize/Restore", 48
                     ) {
                         MainWindowDelegate.isMaximized = !MainWindowDelegate.isMaximized
                     }
 
-                    TopBarControlButton(Res.drawable.ic_close_24px, "Close") { MainWindowDelegate.close() }
+                    AIconButton(Res.drawable.ic_close_24px, "Close", 48) { MainWindowDelegate.close() }
                 }
             }
         }

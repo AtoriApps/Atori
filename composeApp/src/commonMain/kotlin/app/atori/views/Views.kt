@@ -28,71 +28,21 @@ import app.atori.utils.ResUtils.vector
 import app.atori.resources.Res
 import app.atori.resources.app_name
 import app.atori.resources.ic_atori_logo_24px
-import app.atori.utils.ResUtils.imgBmp
 import app.atori.utils.ResUtils.text
-import jdk.jfr.Description
 import org.jetbrains.compose.resources.DrawableResource
+import java.util.prefs.Preferences
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun IconStringChip(
-    selected: Boolean = false,
-    onClick: () -> Unit = {},
-    content: @Composable () -> Unit = {}
-) = Row(
-    Modifier.height(32.dp).clip(MaterialTheme.shapes.small).clickable(onClick = onClick)
-        .background(if (selected) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent)
-        .border(
-            1.dp,
-            if (selected) Color.Transparent else MaterialTheme.colorScheme.outline,
-            MaterialTheme.shapes.small
-        )
-        .padding(8.dp, 0.dp, 16.dp, 0.dp), Arrangement.spacedBy(8.dp), Alignment.CenterVertically
-) {
-    LocalTextStyle provides MaterialTheme.typography.labelLarge
-    LocalContentColor provides if (selected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onSurfaceVariant
-
-    content()
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun IconChip(icon: ImageVector, description: String? = null, onClick: () -> Unit = {}) = Box(
-    Modifier.height(32.dp).clip(MaterialTheme.shapes.small).clickable(onClick = onClick)
-        .border(1.dp, MaterialTheme.colorScheme.outline, MaterialTheme.shapes.small)
-        .padding(8.dp, 0.dp), Alignment.Center
-) {
-    Icon(
-        icon,
-        description,
-        tint = MaterialTheme.colorScheme.primary,
-    )
+fun Preferences() {
 }
 
 @Composable
-fun TopBarAtoriIcon() = Icon(
-    Res.drawable.ic_atori_logo_24px.vector,
-    Res.string.app_name.text,
-    Modifier.size(24.dp),
-    MaterialTheme.colorScheme.onSurfaceVariant
-)
-
-
-@Composable
-fun TopBarControlButton(
-    icon: DrawableResource, contentDescription: String, onClick: () -> Unit = {}
-) = TopBarControlButton(onClick) {
-    Icon(
-        icon.vector,
-        contentDescription,
-    )
+fun PreferenceGroup(
+    title: String,
+    // content: @Composable () -> Unit
+) {
 }
 
 @Composable
-fun TopBarControlButton(onClick: () -> Unit = {}, content: @Composable () -> Unit = {}) = Button(
-    onClick, Modifier.size(48.dp),
-    contentPadding = PaddingValues(0.dp),
-    colors = standardIconButtonColors,
-) {
-    content()
+fun Preference() {
 }

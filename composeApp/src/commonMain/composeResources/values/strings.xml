@@ -18,4 +18,15 @@
     <string name="reply_arrow">Reply arrow</string>
     <string name="read_to_here">The other party has read to here</string>
     <string name="add_reaction">Add reaction</string>
+    <string name="online">Online</string>
+    <string name="last_seen_recently">Last seen recently</string>
+    <string name="pinned_messages">Pinned messages</string>
+    <string name="call">Call</string>
+    <string name="show_info_panel">Show info panel</string>
+    <string name="hide_info_panel">Hide info panel</string>
+    <string name="search_messages">Search messages</string>
+    <string name="more">More</string>
+    <string name="emoji">Emoji</string>
+    <string name="send">Send</string>
+    <string name="input_placeholder">Type a message</string>
 </resources>
