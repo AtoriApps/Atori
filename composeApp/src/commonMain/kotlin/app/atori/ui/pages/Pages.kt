@@ -31,12 +31,26 @@ import app.atori.utils.ResUtils.vector
 import app.atori.utils.TimestampUtils.timeStr
 import app.atori.utils.TimestampUtils.timestamp
 import org.jetbrains.compose.resources.DrawableResource
+import kotlin.math.PI
 
 @Composable
 fun DemoChatInfoPage() = LazyColumn(
     Modifier.fillMaxSize(), contentPadding = PaddingValues(vertical = 16.dp),
     verticalArrangement = Arrangement.spacedBy(16.dp)
 ) {
+    @Composable
+    fun FakeStatusOwnedPreferenceItem(
+        icon: DrawableResource,
+        title: String,
+        content: String,
+        subtitle: String? = null
+    ) = PreferenceItem(icon, title, subtitle) {
+        Text(
+            content, color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = MaterialTheme.typography.bodyLarge
+        )
+    }
+
     // Status
     item {
         Row(
@@ -66,7 +80,12 @@ fun DemoChatInfoPage() = LazyColumn(
     item {
         PreferenceGroup(Res.string.information.text) {
             PreferenceItem(
-                Res.drawable.ic_id_card_24px, Res.string.tap_to_copy_jid.text,
+                Res.drawable.ic_id_platform_24px,
+                Res.string.a_contact_from.text(DemoData.userPlatform),
+                Res.string.you_re_using.text(DemoData.userJid)
+            )
+            PreferenceItem(
+                Res.drawable.ic_id_card_24px, Res.string.tap_to_copy_other_party_s_account.text,
                 DemoData.userJid
             )
             PreferenceItem(Res.drawable.ic_qr_code_24px, Res.string.generate_qr_code.text)
@@ -77,10 +96,58 @@ fun DemoChatInfoPage() = LazyColumn(
         }
         PreferenceGroup(Res.string.chat.text) {
             var shareStatusUpdate by remember { mutableStateOf(true) }
+            var receiveStatusUpdate by remember { mutableStateOf(true) }
+            var canNotify by remember { mutableStateOf(true) }
             SwitchPreferenceItem(
                 Res.drawable.ic_share_status_24px,
                 Res.string.share_status_update.text, null, shareStatusUpdate
             ) { shareStatusUpdate = it }
+            SwitchPreferenceItem(
+                Res.drawable.ic_receive_status_24px,
+                Res.string.receive_other_party_status.text, null, receiveStatusUpdate
+            ) { receiveStatusUpdate = it }
+            FakeStatusOwnedPreferenceItem(
+                Res.drawable.ic_user_permission_24px,
+                Res.string.permission_manage.text, Res.string.only_chat.text
+            )
+            SwitchPreferenceItem(
+                Res.drawable.ic_notification_24px,
+                Res.string.notify.text, null, canNotify
+            ) { canNotify = it }
+            FakeStatusOwnedPreferenceItem(
+                Res.drawable.ic_msg_encryption_24px,
+                Res.string.message_encryption.text, Res.string.omemo.text
+            )
+            FakeStatusOwnedPreferenceItem(
+                Res.drawable.ic_contacts_24px,
+                Res.string.members.text, "3"
+            )
+            FakeStatusOwnedPreferenceItem(
+                Res.drawable.ic_media_24px, Res.string.media.text,
+                "18+", Res.string.photos_av_files.text
+            )
+            PreferenceItem(
+                Res.drawable.ic_export_chat_history_24px, Res.string.export_chat_history.text,
+                Res.string.backup_to_a_local_file.text
+            )
+            FakeStatusOwnedPreferenceItem(
+                Res.drawable.ic_clear_chat_history_24px, Res.string.clear_chat_history.text,
+                Res.string.pieces.text("1919"), Res.string.will_lost_them_forever.text
+            )
+        }
+        PreferenceGroup(Res.string.contact.text) {
+            var pinChat by remember { mutableStateOf(false) }
+            PreferenceItem(
+                Res.drawable.ic_edit_24px, Res.string.edit_info.text,
+                Res.string.remarks_labels_contact_ways_descriptions.text
+            )
+            SwitchPreferenceItem(
+                Res.drawable.ic_pin_24px, Res.string.pin_this_chat.text, null, pinChat
+            ) { pinChat = it }
+            PreferenceItem(Res.drawable.ic_report_24px, Res.string.report.text)
+            PreferenceItem(Res.drawable.ic_delete_24px, Res.string.delete_contact.text)
+            PreferenceItem(Res.drawable.ic_leave_24px, Res.string.leave_group.text)
+            PreferenceItem(Res.drawable.ic_block_24px, Res.string.block.text)
         }
     }
 }

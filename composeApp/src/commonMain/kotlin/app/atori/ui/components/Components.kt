@@ -39,7 +39,7 @@ fun PreferenceGroup(
 
 @Composable
 fun PreferenceHeader(title: String) =
-    Box(Modifier.fillMaxWidth().height(48.dp).padding(horizontal = 16.dp), Alignment.BottomStart) {
+    Box(Modifier.fillMaxWidth().height(48.dp).padding(16.dp, 4.dp), Alignment.BottomStart) {
         Text(
             title, style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.primary
