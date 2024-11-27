@@ -6,8 +6,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
-import app.atori.AndroidAtoriTheme
-import app.atori.screens.MainScreen
+import app.atori.ui.AndroidAtoriTheme
+import app.atori.ui.screens.DemoMainScreen
 import app.atori.stores.AndroidAppStateStore
 
 class AndroidApplication : Application() {
@@ -18,11 +18,6 @@ class AndroidApplication : Application() {
     }
 }
 
-class MainActivity : ComposeActivity() {
-    @Composable
-    override fun content() = MainScreen()
-}
-
 abstract class ComposeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,11 +25,11 @@ abstract class ComposeActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AndroidAtoriTheme {
-                content()
+                Content()
             }
         }
     }
 
     @Composable
-    abstract fun content()
+    abstract fun Content()
 }

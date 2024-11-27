@@ -8,6 +8,8 @@ import app.atori.utils.ResUtils.imgBmp
 object DemoData {
     val userName = "Earzu Chan"
 
+    val userJid = "ezc@atori.im"
+
     val userAvatar
         @Composable
         get() = Res.drawable.img_avatar_demo.imgBmp
