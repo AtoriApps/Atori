@@ -21,7 +21,7 @@
     <string name="call">通话</string>
     <string name="show_info_panel">显示信息面板</string>
     <string name="hide_info_panel">隐藏信息面板</string>
-    <string name="search_messages">搜索消息</string>
+    <string name="search_messages">查找聊天记录</string>
     <string name="more">更多</string>
     <string name="emoji">表情</string>
     <string name="send">发送</string>
@@ -39,7 +39,8 @@
     <string name="permission_manage">权限管理</string>
     <string name="only_chat">仅聊天</string>
     <string name="notify">通知</string>
-    <string name="message_encryption">消息加密方案</string>
+    <string name="message_encryption">消息加密</string>
+    <string name="tap_to_view_details">点击查看详情</string>
     <string name="omemo">OMEMO</string>
     <string name="members">成员</string>
     <string name="contact">联系人</string>
@@ -55,6 +56,20 @@
     <string name="pin_this_chat">置顶此聊天</string>
     <string name="report">举报</string>
     <string name="delete_contact">删除联系人</string>
+    <string name="not_ur_contact">对方还不是您的联系人</string>
+    <string name="ur_contact">对方是您的联系人</string>
     <string name="leave_group">退出群组</string>
     <string name="block">拉黑</string>
+    <string name="back">返回</string>
+    <string name="chat_details">聊天详情</string>
+    <string name="expand_or_side_panel">展开或收起侧面板</string>
+    <string name="close">关闭</string>
+    <string name="minimize">最小化</string>
+    <string name="maximize_or_restore">最大化/还原</string>
+    <string name="one_atori">Atori 中心</string>
+    <string name="mute">闭麦</string>
+    <string name="speaker">免提</string>
+    <string name="end_call">结束通话</string>
+    <string name="record">录音</string>
+    <string name="no_video">不摄</string>
 </resources>

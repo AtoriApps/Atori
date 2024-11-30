@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,7 +22,9 @@ import app.atori.models.DemoChatModel
 import app.atori.resources.*
 import app.atori.resources.Res
 import app.atori.resources.ic_chat_24px
-import app.atori.stores.UniversalStateStore.demoCurrentChat
+import app.atori.stores.DemoStateStore
+import app.atori.ui.components.AtoriIconButton
+import app.atori.ui.components.AtoriIconButtonStyles
 import app.atori.ui.components.PreferenceGroup
 import app.atori.ui.components.PreferenceItem
 import app.atori.ui.components.SwitchPreferenceItem
@@ -31,12 +34,11 @@ import app.atori.utils.ResUtils.vector
 import app.atori.utils.TimestampUtils.timeStr
 import app.atori.utils.TimestampUtils.timestamp
 import org.jetbrains.compose.resources.DrawableResource
-import kotlin.math.PI
 
 @Composable
-fun DemoChatInfoPage() = LazyColumn(
-    Modifier.fillMaxSize(), contentPadding = PaddingValues(vertical = 16.dp),
-    verticalArrangement = Arrangement.spacedBy(16.dp)
+fun DemoChatDetailsPage(showActions: Boolean = false, onClickCall: () -> Unit = {}) = LazyColumn(
+    Modifier.fillMaxSize(), contentPadding = PaddingValues(vertical = 8.dp),
+    verticalArrangement = Arrangement.spacedBy(8.dp)
 ) {
     @Composable
     fun FakeStatusOwnedPreferenceItem(
@@ -52,25 +54,45 @@ fun DemoChatInfoPage() = LazyColumn(
     }
 
     // Status
+    val esDp = 24.dp
     item {
-        Row(
-            Modifier.padding(horizontal = 24.dp), Arrangement.spacedBy(16.dp),
-            Alignment.CenterVertically
+        Column(
+            Modifier.Companion.fillMaxWidth().padding(vertical = 16.dp),
+            horizontalAlignment = Alignment.Companion.CenterHorizontally
         ) {
             Image(
                 DemoData.userAvatar, DemoData.userName,
-                Modifier.size(80.dp).clip(CircleShape)
+                Modifier.padding(bottom = esDp).size(128.dp).clip(CircleShape)
             )
-            Column(Modifier.weight(1F)) {
-                Text(
-                    DemoData.userName,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    style = MaterialTheme.typography.titleMedium
+            Text(
+                DemoData.userName, Modifier.padding(bottom = 8.dp),
+                MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.headlineSmall
+            )
+            Text(
+                "${Res.string.online.text} • ${Res.string.last_seen_recently.text}",
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = MaterialTheme.typography.bodyLarge
+            )
+            if (showActions) Row(
+                Modifier.padding(top = esDp),
+                Arrangement.spacedBy(esDp)
+            ) {
+                AtoriIconButton(
+                    Res.drawable.ic_pinned_msgs_24px, Res.string.pinned_messages.text,
+                    48, AtoriIconButtonStyles.Tonal
                 )
-                Text(
-                    "${Res.string.online.text} • ${Res.string.last_seen_recently.text}",
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    style = MaterialTheme.typography.labelLarge
+                AtoriIconButton(
+                    Res.drawable.ic_chat_24px, Res.string.chat.text,
+                    48, AtoriIconButtonStyles.Tonal
+                )
+                AtoriIconButton(
+                    Res.drawable.ic_call_24px, Res.string.call.text,
+                    48, AtoriIconButtonStyles.Tonal, onClick = onClickCall
+                )
+                AtoriIconButton(
+                    Res.drawable.ic_search_msgs_24px, Res.string.search_messages.text,
+                    48, AtoriIconButtonStyles.Tonal
                 )
             }
         }
@@ -116,7 +138,8 @@ fun DemoChatInfoPage() = LazyColumn(
             ) { canNotify = it }
             FakeStatusOwnedPreferenceItem(
                 Res.drawable.ic_msg_encryption_24px,
-                Res.string.message_encryption.text, Res.string.omemo.text
+                Res.string.message_encryption.text, Res.string.omemo.text,
+                Res.string.tap_to_view_details.text
             )
             FakeStatusOwnedPreferenceItem(
                 Res.drawable.ic_contacts_24px,
@@ -145,9 +168,128 @@ fun DemoChatInfoPage() = LazyColumn(
                 Res.drawable.ic_pin_24px, Res.string.pin_this_chat.text, null, pinChat
             ) { pinChat = it }
             PreferenceItem(Res.drawable.ic_report_24px, Res.string.report.text)
-            PreferenceItem(Res.drawable.ic_delete_24px, Res.string.delete_contact.text)
+            PreferenceItem(
+                Res.drawable.ic_delete_24px,
+                Res.string.delete_contact.text, Res.string.ur_contact.text
+            )
+            PreferenceItem(
+                Res.drawable.ic_add_person_24px,
+                Res.string.add_contact.text, Res.string.not_ur_contact.text
+            )
             PreferenceItem(Res.drawable.ic_leave_24px, Res.string.leave_group.text)
             PreferenceItem(Res.drawable.ic_block_24px, Res.string.block.text)
+        }
+    }
+}
+
+@Composable
+fun DemoCallPage(
+    isInDialog: Boolean = false,
+    onClickClose: () -> Unit = {}
+) = Column(
+    Modifier.fillMaxSize()
+        .background(if (isInDialog) MaterialTheme.colorScheme.surfaceContainerHigh else MaterialTheme.colorScheme.surface)
+        .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top)) // FIXME: 是否应该抽离
+        .padding(if (isInDialog) 8.dp else 0.dp).clip(RoundedCornerShape(20.dp))
+)
+{
+    // 标题栏与时间
+    Box(
+        Modifier.fillMaxWidth()
+            .background(if (isInDialog) MaterialTheme.colorScheme.surface else Color.Transparent)
+            .padding(horizontal = 4.dp)
+            .height(if (isInDialog) 48.dp else 64.dp)
+    ) {
+        Text(
+            "11:45", Modifier.align(Alignment.Center), MaterialTheme.colorScheme.onSurface,
+            style = MaterialTheme.typography.titleLarge
+        )
+        if (isInDialog) AtoriIconButton(
+            Res.drawable.ic_close_24px, Res.string.close.text,
+            modifier = Modifier.align(Alignment.CenterEnd), onClick = onClickClose
+        )
+    }
+
+    // 头像与名称
+    val tOrZero = (if (isInDialog) 20 else 0).dp
+    val sOr24 = (if (isInDialog) 16 else 24).dp
+    Column(
+        Modifier.fillMaxWidth().weight(1F)
+            .clip(RoundedCornerShape(bottomEnd = tOrZero, bottomStart = tOrZero))
+            .background(if (isInDialog) MaterialTheme.colorScheme.surface else Color.Transparent)
+            .padding(vertical = sOr24),
+        if (isInDialog) Arrangement.Center else Arrangement.Top,
+        Alignment.CenterHorizontally
+    ) {
+        Image(
+            DemoData.userAvatar, DemoData.userName,
+            Modifier.padding(bottom = sOr24).size(128.dp)
+                .clip(CircleShape)
+        )
+        Text(
+            DemoData.userName, Modifier.padding(bottom = 8.dp),
+            MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.headlineSmall
+        )
+        Text(
+            DemoData.userJid,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = MaterialTheme.typography.bodyLarge
+        )
+    }
+
+    // 按钮面板
+    val ebDp = 28.dp
+    val sOrSE = (if (isInDialog) 16 else 48).dp
+    Column(
+        Modifier.fillMaxWidth().clip(RoundedCornerShape(topStart = ebDp, topEnd = ebDp))
+            .background(if (isInDialog) Color.Transparent else MaterialTheme.colorScheme.surfaceContainerHigh)
+            .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Bottom)) // FIXME: 是否应该抽离
+            .padding(
+                top = if (isInDialog) 16.dp else 32.dp,
+                bottom = sOrSE
+            ), Arrangement.spacedBy(sOrSE), Alignment.CenterHorizontally
+    ) {
+        @Composable
+        fun TitledActionIconButton(
+            icon: DrawableResource,
+            title: String,
+            isOn: Boolean = false,
+            onClick: () -> Unit
+        ) = Column(Modifier, Arrangement.spacedBy(12.dp), Alignment.CenterHorizontally) {
+            AtoriIconButton(
+                icon, title, 48,
+                if (isOn) AtoriIconButtonStyles.Filled else AtoriIconButtonStyles.SpecialNotActivated,
+                onClick = onClick
+            )
+            Text(
+                title,
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+
+        var micOff by remember { mutableStateOf(false) }
+        var speakerOn by remember { mutableStateOf(false) }
+        var recordOn by remember { mutableStateOf(false) }
+
+        Row(Modifier.fillMaxWidth().padding(horizontal = 32.dp), Arrangement.SpaceBetween) {
+            TitledActionIconButton(
+                Res.drawable.ic_mic_off_24px, Res.string.mute.text, micOff
+            ) { micOff = !micOff }
+            TitledActionIconButton(
+                Res.drawable.ic_speacker_24px, Res.string.speaker.text, speakerOn
+            ) { speakerOn = !speakerOn }
+            TitledActionIconButton(
+                Res.drawable.ic_record_24px, Res.string.record.text, recordOn
+            ) { recordOn = !recordOn }
+        }
+
+        AtoriIconButton(
+            onClickClose, 64, AtoriIconButtonStyles.SpecialError
+        ) {
+            Icon(
+                Res.drawable.ic_end_call_24px.vector, Res.string.end_call.text, Modifier.size(36.dp)
+            )
         }
     }
 }
@@ -278,8 +420,8 @@ fun DemoChatsPage() {
             verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             itemsIndexed(demoConversations) { index, chat ->
-                ChatsPageChatItem(chat, index == demoCurrentChat.value) {
-                    demoCurrentChat.value = index
+                ChatsPageChatItem(chat, index == DemoStateStore.currentChat.value) {
+                    DemoStateStore.currentChat.value = index
                 }
             }
         }

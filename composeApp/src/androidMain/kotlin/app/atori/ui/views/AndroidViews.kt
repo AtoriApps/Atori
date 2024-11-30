@@ -1,100 +1,88 @@
 package app.atori.ui.views
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import app.atori.ui.components.AtoriIconButton
-import app.atori.ui.components.TopBarAtoriIcon
+import app.atori.misc.DemoData
 import app.atori.resources.Res
-import app.atori.resources.ic_search_24px
-import app.atori.resources.img_avatar_demo
-import app.atori.stores.UniversalStateStore
-import app.atori.utils.ResUtils.imgBmp
-import app.atori.utils.ResUtils.vector
-import app.atori.ui.views.dialogs.AboutDialog
-import app.atori.ui.views.dialogs.DialogBase
-import app.atori.ui.views.dialogs.OneAtoriDialog
+import app.atori.resources.back
+import app.atori.resources.ic_back_24px
+import app.atori.resources.ic_more_24px
+import app.atori.resources.last_seen_recently
+import app.atori.resources.more
+import app.atori.resources.online
+import app.atori.stores.AndroidDemoStateStore
+import app.atori.ui.components.AtoriIconButton
+import app.atori.utils.ResUtils.text
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DemoMainScreenTopBar() {
-    var showOneAtori by remember { mutableStateOf(false) }
+fun DemoScreensTopBar(
+    title: String = DemoData.userName,
+    subtitle: String = "${Res.string.online.text} • ${Res.string.last_seen_recently.text}",
+    showSubtitle: Boolean = true,
+    showMoreButton: Boolean = true,
+    showBackButton: Boolean = true,
+    showDropMenu: Boolean = false,
+    onDismissDropMenu: () -> Unit = {},
+    dropMenuContent: (@Composable () -> Unit)? = null,
+    onClickTitle: (() -> Unit)? = null,
+    onClickMore: () -> Unit = {},
+    onClickBack: () -> Unit = {}
+) = Row(
+    Modifier
+        .fillMaxWidth()
+        .background(MaterialTheme.colorScheme.surfaceContainer)
+        .windowInsetsPadding(TopAppBarDefaults.windowInsets)
+        .height(64.dp)
+        .padding(horizontal = 8.dp),
+    Arrangement.spacedBy(8.dp), Alignment.CenterVertically
+) {
+    // 左侧内容
+    if (showBackButton)
+        AtoriIconButton(Res.drawable.ic_back_24px, Res.string.back.text, 48, onClick = onClickBack)
 
-    var showAbout by remember { mutableStateOf(false) }
-
-    if (showOneAtori)
-        DialogBase({ showOneAtori = false }) {
-            OneAtoriDialog({ showAbout = true })
-        }
-
-    if (showAbout)
-        DialogBase({ showAbout = false }) {
-            AboutDialog()
-        }
-
-    Box(
+    // 中间标题
+    Column(
         Modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surfaceContainer)
-            .windowInsetsPadding(TopAppBarDefaults.windowInsets)
-            .height(64.dp)
-            .padding(horizontal = 8.dp)
+            .weight(1F)
+            .clickable(null, null, onClickTitle != null, onClick = onClickTitle ?: {})
     ) {
-        // 左侧内容
-        Row(Modifier.align(Alignment.CenterStart)) {
-            Box(Modifier.size(48.dp), Alignment.Center) {
-                TopBarAtoriIcon()
-            }
-        }
-
-        // 中间标题
         Text(
-            "Atori",
-            Modifier.align(Alignment.Center),
-            MaterialTheme.colorScheme.onSurface,
-            style = MaterialTheme.typography.titleLarge
+            title, color = MaterialTheme.colorScheme.onSurface,
+            style = MaterialTheme.typography.titleMedium
         )
-
-        // 右侧内容
-        Row(Modifier.align(Alignment.CenterEnd)) {
-            AtoriIconButton(Res.drawable.ic_search_24px, "Search", 48) {}
-
-            AtoriIconButton({
-                showOneAtori = true
-            }, 48) {
-                Image(
-                    Res.drawable.img_avatar_demo.imgBmp,
-                    "One Atori",
-                    Modifier
-                        .size(32.dp)
-                        .clip(CircleShape)
-                )
-            }
-        }
+        if (showSubtitle) Text(
+            subtitle, color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = MaterialTheme.typography.labelLarge
+        )
     }
-}
 
-@Composable
-fun DemoMainScreenBottomBar() = NavigationBar {
-    UniversalStateStore.navTabItems.forEachIndexed { index, item ->
-        NavigationBarItem(
-            icon = {
-                Icon(
-                    (if (UniversalStateStore.currentNavTab.value == index) item.selectedIcon else item.icon).vector,
-                    item.name
-                )
-            },
-            label = { Text(item.name) },
-            selected = UniversalStateStore.currentNavTab.value == index,
-            onClick = { UniversalStateStore.currentNavTab.value = index },
-            alwaysShowLabel = false
-        )
+    // 右侧内容
+    if (showMoreButton) Box {
+        AtoriIconButton(Res.drawable.ic_more_24px, Res.string.more.text, 48, onClick = onClickMore)
+        if (dropMenuContent != null) DropdownMenu(
+            showDropMenu,
+            onDismissDropMenu
+        ) { dropMenuContent() }
     }
 }

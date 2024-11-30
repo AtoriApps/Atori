@@ -24,7 +24,7 @@
     <string name="call">Call</string>
     <string name="show_info_panel">Show info panel</string>
     <string name="hide_info_panel">Hide info panel</string>
-    <string name="search_messages">Search messages</string>
+    <string name="search_messages">Search chat history</string>
     <string name="more">More</string>
     <string name="emoji">Emoji</string>
     <string name="send">Send</string>
@@ -43,6 +43,7 @@
     <string name="only_chat">Only chat</string>
     <string name="notify">Notify</string>
     <string name="message_encryption">Message encryption</string>
+    <string name="tap_to_view_details">Tap to view details</string>
     <string name="omemo">OMEMO</string>
     <string name="members">Members</string>
     <string name="contact">Contact</string>
@@ -58,6 +59,20 @@
     <string name="pin_this_chat">Pin this chat</string>
     <string name="report">Report</string>
     <string name="delete_contact">Delete contact</string>
+    <string name="not_ur_contact">The other party is not your contact yet</string>
+    <string name="ur_contact">The other party is your contact</string>
     <string name="leave_group">Leave group</string>
     <string name="block">Block</string>
+    <string name="back">Back</string>
+    <string name="chat_details">Chat details</string>
+    <string name="expand_or_side_panel">Expand or narrow side panel</string>
+    <string name="close">Close</string>
+    <string name="minimize">Minimize</string>
+    <string name="maximize_or_restore">Maximize/Restore</string>
+    <string name="one_atori">One Atori</string>
+    <string name="mute">Mute</string>
+    <string name="speaker">Speaker</string>
+    <string name="end_call">End call</string>
+    <string name="record">Record</string>
+    <string name="no_video">Camera off</string>
 </resources>

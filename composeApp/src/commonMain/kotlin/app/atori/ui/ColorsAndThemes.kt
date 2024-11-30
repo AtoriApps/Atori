@@ -4,33 +4,43 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import app.atori.utils.ComposeUtils.opacify
+import app.atori.utils.ComposeUtils.opacity
 
 // 恩情颜色值
-val tonalButtonColors
+val atoriIconButtonSpecialNotActivatedColor
     @Composable
     get() = ButtonColors(
-        MaterialTheme.colorScheme.secondaryContainer,
-        MaterialTheme.colorScheme.onSecondaryContainer,
-        MaterialTheme.colorScheme.onSurface.opacify(0.12F),
-        MaterialTheme.colorScheme.onSurface
+        MaterialTheme.colorScheme.surfaceContainerLow,
+        MaterialTheme.colorScheme.onSurface,
+        MaterialTheme.colorScheme.surfaceContainerLowest,
+        MaterialTheme.colorScheme.onSurface.opacity(0.38F)
     )
-val filledButtonColors
+
+val atoriIconButtonSpecialErrorColor
+    @Composable
+    get() = ButtonColors(
+        MaterialTheme.colorScheme.error,
+        MaterialTheme.colorScheme.onError,
+        MaterialTheme.colorScheme.errorContainer,
+        MaterialTheme.colorScheme.onError.opacity(0.38F)
+    )
+
+val atoriIconButtonFilledColor
     @Composable
     get() = ButtonColors(
         MaterialTheme.colorScheme.primary,
         MaterialTheme.colorScheme.onPrimary,
-        MaterialTheme.colorScheme.onSurface.opacify(0.12F),
-        MaterialTheme.colorScheme.onSurface
+        MaterialTheme.colorScheme.onSurface.opacity(0.12F),
+        MaterialTheme.colorScheme.onSurface.opacity(0.38F)
     )
 
-val standardIconButtonColors
+val atoriIconButtonStandardColor
     @Composable
     get() = ButtonColors(
         Color.Transparent,
         MaterialTheme.colorScheme.onSurfaceVariant,
         Color.Transparent,
-        MaterialTheme.colorScheme.onSurface.opacify(0.38F)
+        MaterialTheme.colorScheme.onSurface.opacity(0.38F)
     )
 
 // 生成的颜色值

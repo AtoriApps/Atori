@@ -6,6 +6,7 @@ import org.jivesoftware.smack.android.AndroidSmackInitializer
 
 object AndroidAppStateStore {
     var inited = false
+        private set
 
     lateinit var appContext: Context
 

@@ -84,9 +84,9 @@ object XmppUtils {
 }
 
 object ComposeUtils {
-    fun Color.opacify(opacity: Float): Color {
-        val alpha = this.alpha * opacity
-        return Color(alpha = alpha, red = red, green = green, blue = blue)
+    fun Color.opacity(opacity: Float): Color {
+        val newAlpha = alpha * opacity
+        return this.copy(newAlpha)
     }
 
     val Int.dpPx: Float

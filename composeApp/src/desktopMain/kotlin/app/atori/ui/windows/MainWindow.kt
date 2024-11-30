@@ -30,11 +30,10 @@ fun MainWindow(appScope: ApplicationScope) {
     val windowState = rememberWindowState()
     Window(
         state = windowState,
-        icon = if (isSystemInDarkTheme()) painterResource(Res.drawable.ic_atori_icon) else painterResource(Res.drawable.ic_atori_icon_dark),
-        onCloseRequest = appScope::exitApplication,
-        title = Res.string.app_name.text,
-        undecorated = true,
-        transparent = true
+        icon = if (isSystemInDarkTheme()) painterResource(Res.drawable.ic_atori_icon)
+        else painterResource(Res.drawable.ic_atori_icon_dark),
+        onCloseRequest = appScope::exitApplication, title = Res.string.app_name.text,
+        undecorated = true, transparent = true
     ) {
         MainWindowDelegate.setMainWindowInstance(appScope, this@Window, windowState)
 
@@ -78,7 +77,11 @@ object MainWindowDelegate {
     private lateinit var mWindowScope: FrameWindowScope
     private lateinit var mWindowState: WindowState
 
-    fun setMainWindowInstance(appScope: ApplicationScope, windowScope: FrameWindowScope, windowState: WindowState) {
+    fun setMainWindowInstance(
+        appScope: ApplicationScope,
+        windowScope: FrameWindowScope,
+        windowState: WindowState
+    ) {
         runCatching {
             mAppScope = appScope
             mWindowScope = windowScope
@@ -111,6 +114,7 @@ object MainWindowDelegate {
     var isMaximized: Boolean
         get() = ensureWindow { mWindowState.placement == WindowPlacement.Maximized }
         set(value) = ensureWindow {
-            mWindowState.placement = if (value) WindowPlacement.Maximized else WindowPlacement.Floating
+            mWindowState.placement =
+                if (value) WindowPlacement.Maximized else WindowPlacement.Floating
         }
 }

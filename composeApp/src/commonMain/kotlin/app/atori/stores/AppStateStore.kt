@@ -6,7 +6,7 @@ import app.atori.models.NavTabItem
 import app.atori.ui.pages.DemoChatsPage
 import app.atori.resources.*
 
-object UniversalStateStore {
+object AppStateStore {
     val navTabItems = listOf(
         NavTabItem(Res.drawable.ic_chats_24px, Res.drawable.ic_chats_filled_24px, "聊天") {
             DemoChatsPage()
@@ -20,6 +20,4 @@ object UniversalStateStore {
     )
 
     val currentNavTab = mutableStateOf(0)
-
-    val demoCurrentChat = mutableStateOf(-1)
 }

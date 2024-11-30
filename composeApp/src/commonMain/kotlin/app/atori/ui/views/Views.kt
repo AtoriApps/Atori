@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -33,10 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import app.atori.misc.DemoData
@@ -47,20 +43,12 @@ import app.atori.models.DemoMessageReactionModel
 import app.atori.models.DemoMessageType
 import app.atori.resources.Res
 import app.atori.resources.add_reaction
-import app.atori.resources.emoji
 import app.atori.resources.ic_add_reaction_20px
-import app.atori.resources.ic_emoji_24px
-import app.atori.resources.ic_input_more_24px
-import app.atori.resources.ic_send_24px
 import app.atori.resources.illu_read_to_here
 import app.atori.resources.illu_reply_arrow
 import app.atori.resources.img_avatar_demo
-import app.atori.resources.input_placeholder
-import app.atori.resources.more
 import app.atori.resources.read_to_here
 import app.atori.resources.reply_arrow
-import app.atori.resources.send
-import app.atori.ui.components.AtoriIconButton
 import app.atori.ui.components.IconChip
 import app.atori.ui.components.IconStringChip
 import app.atori.utils.ComposeUtils
@@ -337,51 +325,5 @@ fun DemoChatView() {
                 DemoMessageType.READ_TO_HERE -> ReadToHereBlock()
             }
         }
-    }
-}
-
-@Composable
-fun DemoChatInputBar() {
-    val strokeColor = MaterialTheme.colorScheme.outlineVariant
-    var tempText by remember { mutableStateOf("") }
-
-    Row(Modifier.fillMaxWidth().drawWithCache {
-        val strokeWidth = 1.dp.toPx()
-        val start = Offset(0f, 0f)
-        val end = Offset(size.width, 0f)
-        onDrawBehind { drawLine(strokeColor, start, end, strokeWidth) }
-    }.padding(8.dp), Arrangement.spacedBy(8.dp), Alignment.CenterVertically) {
-        @Composable
-        fun InputTextField(
-            text: String,
-            onTextChange: (String) -> Unit,
-            placeholder: String,
-            style: TextStyle = MaterialTheme.typography.bodyMedium,
-            color: Color = MaterialTheme.colorScheme.onSurface,
-            placeholderColor: Color = MaterialTheme.colorScheme.onSurfaceVariant
-        ) {
-            BasicTextField(
-                text,
-                onTextChange,
-                Modifier.weight(1F),
-                cursorBrush = SolidColor(color),
-                textStyle = style.merge(color),
-                decorationBox = { innerTextField ->
-                    if (text.isEmpty()) Text(
-                        placeholder, color = placeholderColor,
-                        style = style, maxLines = 1
-                    )
-                    innerTextField()
-                }
-            )
-        }
-
-        AtoriIconButton(Res.drawable.ic_input_more_24px, Res.string.more.text)
-        InputTextField(
-            tempText, { tempText = it },
-            Res.string.input_placeholder.text
-        )
-        AtoriIconButton(Res.drawable.ic_emoji_24px, Res.string.emoji.text)
-        AtoriIconButton(Res.drawable.ic_send_24px, Res.string.send.text)
     }
 }
