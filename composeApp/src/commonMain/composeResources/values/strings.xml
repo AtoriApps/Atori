@@ -74,5 +74,6 @@
     <string name="speaker">Speaker</string>
     <string name="end_call">End call</string>
     <string name="record">Record</string>
-    <string name="no_video">Camera off</string>
+    <string name="no_video">No video</string>
+    <string name="front_camera">Switch</string>
 </resources>

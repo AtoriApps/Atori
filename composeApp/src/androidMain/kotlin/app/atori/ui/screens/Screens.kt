@@ -54,8 +54,9 @@ import app.atori.ui.components.AtoriIconButton
 import app.atori.ui.components.AtoriMenuItem
 import app.atori.ui.components.PrefabAtoriLogoIcon
 import app.atori.ui.components.SimpleTextField
-import app.atori.ui.pages.DemoCallPage
+import app.atori.ui.pages.DemoVoiceCallPage
 import app.atori.ui.pages.DemoChatDetailsPage
+import app.atori.ui.pages.DemoVideoCallPage
 import app.atori.ui.views.DemoChatView
 import app.atori.ui.views.DemoScreensTopBar
 import app.atori.ui.views.dialogs.AboutDialog
@@ -66,7 +67,12 @@ import app.atori.utils.ResUtils.text
 import app.atori.utils.ResUtils.vector
 
 @Composable
-fun DemoCallScreen() = DemoCallPage { AndroidDemoStateStore.isInCallScreen.value = false }
+fun DemoVoiceCallScreen() =
+    DemoVoiceCallPage { AndroidDemoStateStore.isInVoiceCallScreen.value = false }
+
+@Composable
+fun DemoVideoCallScreen() =
+    DemoVideoCallPage{ AndroidDemoStateStore.isInVideoCallScreen.value = false }
 
 @Composable
 fun DemoMainScreen() {
@@ -203,8 +209,8 @@ fun DemoChatScreen() {
                 showMoreMenu = false
             }, dropMenuContent = {
                 AtoriMenuItem(Res.string.pinned_messages.text, Res.drawable.ic_pinned_msgs_24px)
-                AtoriMenuItem(Res.string.call.text, Res.drawable.ic_call_24px){
-                    AndroidDemoStateStore.isInCallScreen.value = true
+                AtoriMenuItem(Res.string.call.text, Res.drawable.ic_call_24px) {
+                    AndroidDemoStateStore.isInVoiceCallScreen.value = true
                 }
                 AtoriMenuItem(Res.string.search_messages.text, Res.drawable.ic_search_msgs_24px)
             }
@@ -228,7 +234,9 @@ fun DemoChatDetailsScreen() {
         })
     { padding ->
         Box(Modifier.padding(padding), Alignment.Center) {
-            DemoChatDetailsPage(true) { AndroidDemoStateStore.isInCallScreen.value = true }
+            DemoChatDetailsPage(true, {
+                AndroidDemoStateStore.isInVideoCallScreen.value = true
+            }) { AndroidDemoStateStore.isInVoiceCallScreen.value = true }
         }
     }
 }

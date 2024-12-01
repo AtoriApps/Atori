@@ -48,11 +48,18 @@ fun DemoChatPage() {
     val strokeColor = MaterialTheme.colorScheme.outlineVariant
     var showInfoPanel by remember { mutableStateOf(false) }
     var showCallDialog by remember { mutableStateOf(false) }
+    var showCallDialog2 by remember { mutableStateOf(false) }
 
     if (showCallDialog) DialogBase({ showCallDialog = false }) {
         Box(Modifier.height(IntrinsicSize.Min).width(IntrinsicSize.Min)) {
-            DemoCallPage(true) {
+            DemoVoiceCallPage(true) {
                 showCallDialog = false
+            }
+        }
+    } else if (showCallDialog2) DialogBase({ showCallDialog2 = false }) {
+        Box(Modifier.height(IntrinsicSize.Min).width(IntrinsicSize.Min)) { // TODO: 图片还是会撑满高度
+            DemoVideoCallPage(true) {
+                showCallDialog2 = false
             }
         }
     }
@@ -83,7 +90,9 @@ fun DemoChatPage() {
         }
 
         // Pinned Messages
-        AtoriIconButton(Res.drawable.ic_pinned_msgs_24px, Res.string.pinned_messages.text)
+        AtoriIconButton(Res.drawable.ic_pinned_msgs_24px, Res.string.pinned_messages.text) {
+            showCallDialog2 = true
+        }
 
         // Call
         AtoriIconButton(Res.drawable.ic_call_24px, Res.string.call.text) {

@@ -15,6 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import app.atori.misc.DemoData
@@ -36,7 +38,11 @@ import app.atori.utils.TimestampUtils.timestamp
 import org.jetbrains.compose.resources.DrawableResource
 
 @Composable
-fun DemoChatDetailsPage(showActions: Boolean = false, onClickCall: () -> Unit = {}) = LazyColumn(
+fun DemoChatDetailsPage(
+    showActions: Boolean = false,
+    onClickVideoCall: () -> Unit = {},
+    onClickVoiceCall: () -> Unit = {}
+) = LazyColumn(
     Modifier.fillMaxSize(), contentPadding = PaddingValues(vertical = 8.dp),
     verticalArrangement = Arrangement.spacedBy(8.dp)
 ) {
@@ -80,7 +86,7 @@ fun DemoChatDetailsPage(showActions: Boolean = false, onClickCall: () -> Unit = 
             ) {
                 AtoriIconButton(
                     Res.drawable.ic_pinned_msgs_24px, Res.string.pinned_messages.text,
-                    48, AtoriIconButtonStyles.Tonal
+                    48, AtoriIconButtonStyles.Tonal, onClick = onClickVideoCall
                 )
                 AtoriIconButton(
                     Res.drawable.ic_chat_24px, Res.string.chat.text,
@@ -88,7 +94,7 @@ fun DemoChatDetailsPage(showActions: Boolean = false, onClickCall: () -> Unit = 
                 )
                 AtoriIconButton(
                     Res.drawable.ic_call_24px, Res.string.call.text,
-                    48, AtoriIconButtonStyles.Tonal, onClick = onClickCall
+                    48, AtoriIconButtonStyles.Tonal, onClick = onClickVoiceCall
                 )
                 AtoriIconButton(
                     Res.drawable.ic_search_msgs_24px, Res.string.search_messages.text,
@@ -183,7 +189,7 @@ fun DemoChatDetailsPage(showActions: Boolean = false, onClickCall: () -> Unit = 
 }
 
 @Composable
-fun DemoCallPage(
+fun DemoVoiceCallPage(
     isInDialog: Boolean = false,
     onClickClose: () -> Unit = {}
 ) = Column(
@@ -286,6 +292,118 @@ fun DemoCallPage(
 
         AtoriIconButton(
             onClickClose, 64, AtoriIconButtonStyles.SpecialError
+        ) {
+            Icon(
+                Res.drawable.ic_end_call_24px.vector, Res.string.end_call.text, Modifier.size(36.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun DemoVideoCallPage(
+    isInDialog: Boolean = false,
+    onClickClose: () -> Unit = {}
+) = Column(
+    Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surfaceContainerHigh)
+        .padding(if (isInDialog) 8.dp else 0.dp)
+        .clip(RoundedCornerShape((if (isInDialog) 20 else 0).dp))
+)
+{
+    // 标题栏与时间
+    Box(
+        Modifier.clip(RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
+            .background(Color.Black).weight(1F)
+
+    ) {
+        // FIXME: 弹窗情况下图片老想撑满
+        Image(
+            Res.drawable.img_video_call_demo.imgBmp,
+            Res.string.call.text,
+            Modifier.fillMaxSize(),
+            contentScale = ContentScale.FillWidth
+        )
+        Box(
+            Modifier.align(Alignment.TopCenter)
+                .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top)) // FIXME: 是否应该抽离.fillMaxWidth()
+                .padding(horizontal = 4.dp)
+                .height(if (isInDialog) 48.dp else 64.dp)
+        ) {
+            Text(
+                "11:45", Modifier.align(Alignment.Center), // 整一个文本都被.shadow(2.dp),
+                MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.titleLarge.merge(
+                    shadow = Shadow(blurRadius = 4F)
+                )
+            )
+            /*if (isInDialog) AtoriIconButton( // 怕和视频通话的自己的画面重叠
+                Res.drawable.ic_close_24px, Res.string.close.text,
+                modifier = Modifier.align(Alignment.CenterEnd), onClick = onClickClose
+            )*/
+        }
+    }
+
+    // 按钮面板
+    val sOrSE = (if (isInDialog) 16 else 48).dp
+    Column(
+        Modifier.fillMaxWidth()
+            .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Bottom)) // FIXME: 是否应该抽离
+            .padding(
+                top = if (isInDialog) 16.dp else 32.dp,
+                bottom = sOrSE
+            ), horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        @Composable
+        fun TitledActionIconButton(
+            icon: DrawableResource,
+            title: String,
+            isOn: Boolean = false,
+            onClick: () -> Unit
+        ) = Column(Modifier, Arrangement.spacedBy(12.dp), Alignment.CenterHorizontally) {
+            AtoriIconButton(
+                icon, title, 48,
+                if (isOn) AtoriIconButtonStyles.Filled else AtoriIconButtonStyles.SpecialNotActivated,
+                onClick = onClick
+            )
+            Text(
+                title,
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+
+        Text(
+            DemoData.userName, Modifier.padding(bottom = 8.dp),
+            MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.headlineSmall
+        )
+        Text(
+            DemoData.userJid, Modifier.padding(bottom = (if (isInDialog) 16 else 24).dp),
+            MaterialTheme.colorScheme.onSurfaceVariant,
+            style = MaterialTheme.typography.bodyLarge
+        )
+
+        var micOff by remember { mutableStateOf(false) }
+        var speakerOn by remember { mutableStateOf(false) }
+        var cameraOff by remember { mutableStateOf(false) }
+        var frontCamera by remember { mutableStateOf(false) }
+
+        Row(Modifier.fillMaxWidth().padding(horizontal = 32.dp), Arrangement.SpaceBetween) {
+            TitledActionIconButton(
+                Res.drawable.ic_mic_off_24px, Res.string.mute.text, micOff
+            ) { micOff = !micOff }
+            TitledActionIconButton(
+                Res.drawable.ic_speacker_24px, Res.string.speaker.text, speakerOn
+            ) { speakerOn = !speakerOn }
+            TitledActionIconButton(
+                Res.drawable.ic_no_camera_24px, Res.string.no_video.text, cameraOff
+            ) { cameraOff = !cameraOff }
+            TitledActionIconButton(
+                Res.drawable.ic_switch_camera_24px, Res.string.front_camera.text, frontCamera
+            ) { frontCamera = !frontCamera }
+        }
+
+        AtoriIconButton(
+            onClickClose, 64, AtoriIconButtonStyles.SpecialError, Modifier.padding(top = sOrSE)
         ) {
             Icon(
                 Res.drawable.ic_end_call_24px.vector, Res.string.end_call.text, Modifier.size(36.dp)
