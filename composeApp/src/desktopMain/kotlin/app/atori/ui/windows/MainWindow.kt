@@ -22,6 +22,7 @@ import app.atori.resources.ic_atori_icon_dark
 import app.atori.ui.panels.MainPanel
 import app.atori.ui.panels.SidePanel
 import app.atori.ui.views.MainWindowTopBar
+import app.atori.utils.ComposeUtils.van
 import org.jetbrains.compose.resources.painterResource
 
 // 怎么确定只有单例
@@ -39,19 +40,16 @@ fun MainWindow(appScope: ApplicationScope) {
 
         AtoriTheme {
             val rcs17 = RoundedCornerShape(17.dp)
-            val rcs0 = RoundedCornerShape(0.dp)
 
             Surface(
                 Modifier.fillMaxSize()
                     // 窗口基本样式，另外发现这 Surface 和 IconButton 的主题色有关
-                    .clip(if (MainWindowDelegate.isMaximized) rcs0 else rcs17)
+                    .van(!MainWindowDelegate.isMaximized) { clip(rcs17) }
                     .background(MaterialTheme.colorScheme.surface)
-                    .border(
-                        1.dp,
-                        if (MainWindowDelegate.isMaximized) Color.Transparent else MaterialTheme.colorScheme.outlineVariant,
-                        rcs17
-                    )
-                    .padding(if (MainWindowDelegate.isMaximized) 0.dp else 1.dp)
+                    .van(!MainWindowDelegate.isMaximized) {
+                        border(1.dp, MaterialTheme.colorScheme.outlineVariant, rcs17)
+                    }
+                    .van(!MainWindowDelegate.isMaximized) { padding(1.dp) }
                 // FIXME: 以后限制窗口大小
             ) {
                 // 窗口主骨架

@@ -1,7 +1,9 @@
 package app.atori.ui.views
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,12 +14,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -32,8 +36,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import app.atori.misc.DemoData
 import app.atori.models.DemoMessageBodyType
@@ -43,12 +51,15 @@ import app.atori.models.DemoMessageReactionModel
 import app.atori.models.DemoMessageType
 import app.atori.resources.Res
 import app.atori.resources.add_reaction
+import app.atori.resources.call
 import app.atori.resources.ic_add_reaction_20px
 import app.atori.resources.illu_read_to_here
 import app.atori.resources.illu_reply_arrow
 import app.atori.resources.img_avatar_demo
 import app.atori.resources.read_to_here
 import app.atori.resources.reply_arrow
+import app.atori.ui.components.AtoriIconButton
+import app.atori.ui.components.AtoriIconButtonStyles
 import app.atori.ui.components.IconChip
 import app.atori.ui.components.IconStringChip
 import app.atori.utils.ComposeUtils
@@ -60,6 +71,7 @@ import app.atori.utils.TimestampUtils.timeStr
 import app.atori.utils.TimestampUtils.timestamp
 import org.jetbrains.compose.resources.DrawableResource
 import kotlin.collections.forEach
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalLayoutApi::class)
 @Composable
@@ -325,5 +337,94 @@ fun DemoChatView() {
                 DemoMessageType.READ_TO_HERE -> ReadToHereBlock()
             }
         }
+    }
+}
+
+
+@Composable
+internal fun TitledActionIconButtonForCallPage(
+    icon: DrawableResource,
+    title: String,
+    isOn: Boolean = false,
+    onClick: () -> Unit
+) = Column(Modifier, Arrangement.spacedBy(12.dp), Alignment.CenterHorizontally) {
+    AtoriIconButton(
+        icon, title, 48,
+        if (isOn) AtoriIconButtonStyles.Filled else AtoriIconButtonStyles.SpecialNotActivated,
+        onClick = onClick
+    )
+    Text(
+        title,
+        color = MaterialTheme.colorScheme.onSurface,
+        style = MaterialTheme.typography.bodyMedium
+    )
+}
+
+@Composable
+internal fun DraggableImageInBoxForVideoCallPage(
+    boxDadModifier: Modifier,
+    imgSize: DpSize // 多2Dp
+) {
+    var boxWidthPx = 0
+    var boxHeightPx = 0
+
+    val r18 = RoundedCornerShape(18.dp)
+
+    // 保存偏移量的状态
+    val imageOffsetX = remember { mutableStateOf(0f) }
+    val imageOffsetY = remember { mutableStateOf(0f) }
+
+    // Image 的修饰符
+    val imageModifier = Modifier
+        .offset {
+            // 获取最新的偏移量
+            IntOffset(imageOffsetX.value.roundToInt(), imageOffsetY.value.roundToInt())
+        }
+        .pointerInput(Unit) {
+            detectDragGestures { change, dragAmount ->
+                // FIXME: It maybe a bug of Compose Desktop, open an issue for it
+
+                // 计算新的偏移量
+                val newOffsetX = imageOffsetX.value + dragAmount.x
+                val newOffsetY = imageOffsetY.value + dragAmount.y
+
+                // 计算边界吸附效果
+                val maxOffsetX = boxWidthPx - imgSize.width.toPx()
+                val maxOffsetY = boxHeightPx - imgSize.height.toPx()
+
+                // 吸附的阈值
+                val snapThreshold = 20f
+
+                // 左右边界吸附
+                imageOffsetX.value = when {
+                    newOffsetX < snapThreshold -> 0f
+                    newOffsetX > maxOffsetX - snapThreshold -> maxOffsetX
+                    else -> newOffsetX
+                }
+
+                // 上下边界吸附
+                imageOffsetY.value = when {
+                    newOffsetY < snapThreshold -> 0f
+                    newOffsetY > maxOffsetY - snapThreshold -> maxOffsetY
+                    else -> newOffsetY
+                }
+
+                change.consume()
+            }
+        }
+        .size(imgSize)
+        .clip(r18)
+        .border(2.dp, MaterialTheme.colorScheme.outlineVariant, r18)
+
+    Box(boxDadModifier.onSizeChanged {
+        boxWidthPx = it.width
+        boxHeightPx = it.height
+    }) {// Image 组件
+        Image(
+            Res.drawable.img_avatar_demo.imgBmp,
+            Res.string.call.text,
+            imageModifier,
+            contentScale = ContentScale.Crop
+        )
     }
 }
