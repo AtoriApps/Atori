@@ -56,6 +56,7 @@ import app.atori.ui.components.PrefabAtoriLogoIcon
 import app.atori.ui.components.SimpleTextField
 import app.atori.ui.pages.DemoVoiceCallPage
 import app.atori.ui.pages.DemoChatDetailsPage
+import app.atori.ui.pages.DemoIncomingCallPage
 import app.atori.ui.pages.DemoVideoCallPage
 import app.atori.ui.views.DemoChatView
 import app.atori.ui.views.DemoScreensTopBar
@@ -72,7 +73,16 @@ fun DemoVoiceCallScreen() =
 
 @Composable
 fun DemoVideoCallScreen() =
-    DemoVideoCallPage{ AndroidDemoStateStore.isInVideoCallScreen.value = false }
+    DemoVideoCallPage { AndroidDemoStateStore.isInVideoCallScreen.value = false }
+
+@Composable
+fun DemoIncomingCallScreen() =
+    DemoIncomingCallPage(false, true, {
+        AndroidDemoStateStore.isInIncomingCallScreen.value = false
+    }) {
+        AndroidDemoStateStore.isInIncomingCallScreen.value = false
+        AndroidDemoStateStore.isInVoiceCallScreen.value = true
+    }
 
 @Composable
 fun DemoMainScreen() {
@@ -236,7 +246,9 @@ fun DemoChatDetailsScreen() {
         Box(Modifier.padding(padding), Alignment.Center) {
             DemoChatDetailsPage(true, {
                 AndroidDemoStateStore.isInVideoCallScreen.value = true
-            }) { AndroidDemoStateStore.isInVoiceCallScreen.value = true }
+            }, { AndroidDemoStateStore.isInVoiceCallScreen.value = true }) {
+                AndroidDemoStateStore.isInIncomingCallScreen.value = true
+            }
         }
     }
 }

@@ -3,7 +3,6 @@ package app.atori.ui.pages
 // import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -47,7 +46,8 @@ import org.jetbrains.compose.resources.DrawableResource
 fun DemoChatDetailsPage(
     showActions: Boolean = false,
     onClickVideoCall: () -> Unit = {},
-    onClickVoiceCall: () -> Unit = {}
+    onClickVoiceCall: () -> Unit = {},
+    onClickIncomingCall: () -> Unit = {}
 ) = LazyColumn(
     Modifier.fillMaxSize(), contentPadding = PaddingValues(vertical = 8.dp),
     verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -104,7 +104,7 @@ fun DemoChatDetailsPage(
                 )
                 AtoriIconButton(
                     Res.drawable.ic_search_msgs_24px, Res.string.search_messages.text,
-                    48, AtoriIconButtonStyles.Tonal
+                    48, AtoriIconButtonStyles.Tonal, onClick = onClickIncomingCall
                 )
             }
         }
@@ -201,51 +201,49 @@ fun DemoVoiceCallPage(
 ) = Column(
     Modifier.fillMaxSize()
         .background(if (isInDialog) MaterialTheme.colorScheme.surfaceContainerHigh else MaterialTheme.colorScheme.surface)
-        .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top)) // FIXME: 是否应该抽离
-        .van(isInDialog) { padding(8.dp) }.clip(RoundedCornerShape(20.dp))
-)
-{
-    // 标题栏与时间
-    Box(
-        Modifier.fillMaxWidth()
-            .van(isInDialog) { background(MaterialTheme.colorScheme.surface) }
-            .padding(horizontal = 4.dp)
-            .height(if (isInDialog) 48.dp else 64.dp)
-    ) {
-        Text(
-            "11:45", Modifier.align(Alignment.Center), MaterialTheme.colorScheme.onSurface,
-            style = MaterialTheme.typography.titleLarge
-        )
-        if (isInDialog) AtoriIconButton(
-            Res.drawable.ic_close_24px, Res.string.close.text,
-            modifier = Modifier.align(Alignment.CenterEnd), onClick = onClickClose
-        )
-    }
+        .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top))
+        .van(isInDialog) { padding(8.dp) },
+) {
+    Column(Modifier.fillMaxWidth().weight(1F).van(isInDialog) {
+        clip(RoundedCornerShape(20.dp))
+            .background(MaterialTheme.colorScheme.surface).padding(bottom = 48.dp)
+    }) {// 标题栏与时间
+        Box(
+            Modifier.fillMaxWidth().padding(horizontal = 4.dp)
+                .height(if (isInDialog) 48.dp else 64.dp)
+        ) {
+            Text(
+                "11:45", Modifier.align(Alignment.Center), MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.titleLarge
+            )
+            if (isInDialog) AtoriIconButton(
+                Res.drawable.ic_close_24px, Res.string.close.text,
+                modifier = Modifier.align(Alignment.CenterEnd), onClick = onClickClose
+            )
+        }
 
-    // 头像与名称
-    val sOr24 = (if (isInDialog) 16 else 24).dp
-    Column(
-        Modifier.fillMaxWidth().weight(1F)
-            .van(isInDialog) { clip(RoundedCornerShape(bottomEnd = 20.dp, bottomStart = 20.dp)) }
-            .van(isInDialog) { background(MaterialTheme.colorScheme.surface) }
-            .padding(vertical = sOr24),
-        if (isInDialog) Arrangement.Center else Arrangement.Top,
-        Alignment.CenterHorizontally
-    ) {
-        Image(
-            DemoData.userAvatar, DemoData.userName,
-            Modifier.padding(bottom = sOr24).size(128.dp)
-                .clip(CircleShape)
-        )
-        Text(
-            DemoData.userName, Modifier.padding(bottom = 8.dp),
-            MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.headlineSmall
-        )
-        Text(
-            DemoData.userJid,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            style = MaterialTheme.typography.bodyLarge
-        )
+        // 头像与名称
+        val sOr24 = (if (isInDialog) 16 else 24).dp
+        Column(
+            Modifier.fillMaxWidth().weight(1F).padding(vertical = sOr24),
+            if (isInDialog) Arrangement.Center else Arrangement.Top,
+            Alignment.CenterHorizontally
+        ) {
+            Image(
+                DemoData.userAvatar, DemoData.userName,
+                Modifier.padding(bottom = sOr24).size(128.dp)
+                    .clip(CircleShape)
+            )
+            Text(
+                DemoData.userName, Modifier.padding(bottom = 8.dp),
+                MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.headlineSmall
+            )
+            Text(
+                DemoData.userJid,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
     }
 
     // 按钮面板
@@ -277,7 +275,7 @@ fun DemoVoiceCallPage(
         }
 
         AtoriIconButton(
-            onClickClose, 64, AtoriIconButtonStyles.SpecialError
+            onClickClose, 64, AtoriIconButtonStyles.SpecialDeny
         ) {
             Icon(
                 Res.drawable.ic_end_call_24px.vector, Res.string.end_call.text, Modifier.size(36.dp)
@@ -292,10 +290,8 @@ fun DemoVideoCallPage(
     onClickClose: () -> Unit = {}
 ) = Column(
     Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surfaceContainerHigh)
-        .van(isInDialog) { padding(8.dp) }
-        .van(isInDialog) { clip(RoundedCornerShape(20.dp)) }
-)
-{
+        .van(isInDialog) { padding(8.dp).clip(RoundedCornerShape(20.dp)) }
+) {
     // 标题栏与时间
     Box(
         Modifier.clip(RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
@@ -318,7 +314,7 @@ fun DemoVideoCallPage(
         ) {
             Text(
                 "11:45", Modifier.align(Alignment.Center), // 整一个文本都被.shadow(2.dp),
-                MaterialTheme.colorScheme.onSurface,
+                Color.White,
                 style = MaterialTheme.typography.titleLarge.merge(
                     shadow = Shadow(blurRadius = 4.dpPx)
                 )
@@ -368,7 +364,7 @@ fun DemoVideoCallPage(
         )
 
         var micOff by remember { mutableStateOf(false) }
-        var speakerOn by remember { mutableStateOf(false) }
+        // var speakerOn by remember { mutableStateOf(false) }
         var cameraOff by remember { mutableStateOf(false) }
         var frontCamera by remember { mutableStateOf(false) }
 
@@ -376,9 +372,9 @@ fun DemoVideoCallPage(
             TitledActionIconButtonForCallPage(
                 Res.drawable.ic_mic_off_24px, Res.string.mute.text, micOff
             ) { micOff = !micOff }
-            TitledActionIconButtonForCallPage(
+            /*TitledActionIconButtonForCallPage(
                 Res.drawable.ic_speacker_24px, Res.string.speaker.text, speakerOn
-            ) { speakerOn = !speakerOn }
+            ) { speakerOn = !speakerOn }*/
             TitledActionIconButtonForCallPage(
                 Res.drawable.ic_no_camera_24px, Res.string.no_video.text, cameraOff
             ) { cameraOff = !cameraOff }
@@ -388,12 +384,110 @@ fun DemoVideoCallPage(
         }
 
         AtoriIconButton(
-            onClickClose, 64, AtoriIconButtonStyles.SpecialError, Modifier.padding(top = sOrSE)
+            onClickClose, 64, AtoriIconButtonStyles.SpecialDeny, Modifier.padding(top = sOrSE)
         ) {
             Icon(
                 Res.drawable.ic_end_call_24px.vector, Res.string.end_call.text, Modifier.size(36.dp)
             )
         }
+    }
+}
+
+@Composable
+fun DemoIncomingCallPage(
+    isInDialog: Boolean = false,
+    isVoiceCall: Boolean = true,
+    onClickDeny: () -> Unit = {},
+    onClickAccept: () -> Unit = {}
+) = Column(
+    Modifier.fillMaxSize()
+        .background(if (isInDialog) MaterialTheme.colorScheme.surfaceContainerHigh else MaterialTheme.colorScheme.surface)
+        .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top))
+        .van(isInDialog) {
+            padding(8.dp).clip(RoundedCornerShape(20.dp))
+                .background(MaterialTheme.colorScheme.surface)
+        },
+) {
+    Column(Modifier.fillMaxWidth().weight(1F)) {// 标题栏
+        Box(
+            Modifier.fillMaxWidth().padding(horizontal = 4.dp)
+                .height(if (isInDialog) 48.dp else 64.dp)
+        ) {
+            Text(
+                (if (isVoiceCall) Res.string.incoming_voice_call else Res.string.incoming_video_call).text,
+                Modifier.align(Alignment.Center), MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.titleLarge
+            )
+        }
+
+        // 头像与名称
+        val sOr24 = (if (isInDialog) 16 else 24).dp
+        Column(
+            Modifier.fillMaxWidth().weight(1F).padding(vertical = sOr24),
+            if (isInDialog) Arrangement.Center else Arrangement.Top,
+            Alignment.CenterHorizontally
+        ) {
+            Image(
+                DemoData.userAvatar, DemoData.userName,
+                Modifier.padding(bottom = sOr24).size(128.dp)
+                    .clip(CircleShape)
+            )
+            Text(
+                DemoData.userName, Modifier.padding(bottom = 8.dp),
+                MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.headlineSmall
+            )
+            Text(
+                DemoData.userJid,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
+        Box(
+            Modifier.fillMaxWidth().padding(horizontal = 4.dp)
+                .height(if (isInDialog) 48.dp else 64.dp)
+        ) {
+            Text(
+                DemoData.userJid, Modifier.align(Alignment.Center),
+                MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
+    }
+
+    // 按钮面板
+    val fOrEt = (if (isInDialog) 48 else 80).dp
+    Row(
+        Modifier.fillMaxWidth()
+            .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Bottom)) // FIXME: 是否应该抽离
+            .padding(fOrEt, fOrEt), Arrangement.SpaceBetween, Alignment.CenterVertically
+    ) {
+        @Composable
+        fun BigActionButton(
+            icon: DrawableResource,
+            text: String,
+            buttonColors: ButtonColors,
+            onClick: () -> Unit
+        ) = Column(Modifier, Arrangement.spacedBy(12.dp), Alignment.CenterHorizontally) {
+            AtoriIconButton(onClick, 64, buttonColors) {
+                Icon(
+                    icon.vector, Res.string.end_call.text,
+                    Modifier.size(36.dp)
+                )
+            }
+            Text(
+                text, color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+
+        BigActionButton(
+            Res.drawable.ic_end_call_24px, Res.string.deny_call.text,
+            AtoriIconButtonStyles.SpecialDeny, onClickDeny
+        )
+        BigActionButton(
+            Res.drawable.ic_call_24px, Res.string.accept_call.text,
+            AtoriIconButtonStyles.SpecialAccept, onClickAccept
+        )
     }
 }
 

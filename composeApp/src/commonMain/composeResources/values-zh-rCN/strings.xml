@@ -73,4 +73,8 @@
     <string name="record">录音</string>
     <string name="no_video">不摄</string>
     <string name="front_camera">前摄</string>
+    <string name="incoming_voice_call">语音来电</string>
+    <string name="incoming_video_call">视频来电</string>
+    <string name="deny_call">拒接</string>
+    <string name="accept_call">接听</string>
 </resources>

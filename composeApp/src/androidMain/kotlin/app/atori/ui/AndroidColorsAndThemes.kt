@@ -3,7 +3,6 @@ package app.atori.ui
 import android.content.Context
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
@@ -17,17 +16,9 @@ fun AndroidAtoriTheme(
     useDynamicColors: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val colors = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.S && useDynamicColors) {
-        if (useDarkTheme) dynamicDarkColorScheme(context)
-        else dynamicLightColorScheme(context)
-    } else {
-        // Fallback to static colors
-        if (useDarkTheme) atoriDarkColorScheme
-        else atoriLightColorScheme
-    }
+    val (lightColors, darkColors) = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.S && useDynamicColors)
+        dynamicLightColorScheme(context) to dynamicDarkColorScheme(context)
+    else atoriLightColorScheme to atoriDarkColorScheme
 
-    MaterialTheme(
-        colorScheme = colors, // 颜色
-        content = content // 声明的视图
-    )
+    AtoriTheme(useDarkTheme, darkColors, lightColors, content)
 }

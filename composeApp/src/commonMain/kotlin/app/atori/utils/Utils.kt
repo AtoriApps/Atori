@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.material3.ButtonColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -15,6 +16,7 @@ import androidx.navigation.NavHostController
 import androidx.room.RoomDatabase
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import app.atori.databases.AtoriDatabase
+import app.atori.ui.ColorSet
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.compose.resources.*
 import org.jxmpp.jid.impl.JidCreate
@@ -95,6 +97,14 @@ object ComposeUtils {
         val newAlpha = alpha * opacity
         return this.copy(newAlpha)
     }
+
+    val ColorSet.buttonColors: ButtonColors
+        get() = ButtonColors(
+            color,
+            onColor,
+            colorContainer,
+            onColorContainer
+        )
 
     val Int.dpPx: Float
         @Composable

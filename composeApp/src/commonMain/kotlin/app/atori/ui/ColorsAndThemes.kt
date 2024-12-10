@@ -3,8 +3,21 @@ package app.atori.ui
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import app.atori.utils.ComposeUtils.opacity
+
+val LocalUseDarkTheme = compositionLocalOf { false }
+
+data class ColorSet(
+    val color: Color = Color.Unspecified,
+    val onColor: Color = Color.Unspecified,
+    val colorContainer: Color = Color.Unspecified,
+    val onColorContainer: Color = Color.Unspecified,
+    val colorName: String = "Color"
+)
 
 // 恩情颜色值
 val atoriIconButtonSpecialNotActivatedColor
@@ -43,6 +56,24 @@ val atoriIconButtonStandardColor
         MaterialTheme.colorScheme.onSurface.opacity(0.38F)
     )
 
+val atoriAcceptColor: ColorSet
+    @Composable
+    get() = if (LocalUseDarkTheme.current) ColorSet(
+        acceptDark, onAcceptDark, acceptContainerDark, onAcceptContainerDark, "Accept"
+    )
+    else ColorSet(
+        acceptLight, onAcceptLight, acceptContainerLight, onAcceptContainerLight, "Accept"
+    )
+
+val atoriDenyColor
+    @Composable
+    get() = if (LocalUseDarkTheme.current) ColorSet(
+        denyDark, onDenyDark, denyContainerDark, onDenyContainerDark, "Deny"
+    )
+    else ColorSet(
+        denyLight, onDenyLight, denyContainerLight, onDenyContainerLight, "Deny"
+    )
+
 // 生成的颜色值
 val primaryLight = Color(0xFF8D4959)
 val onPrimaryLight = Color(0xFFFFFFFF)
@@ -79,6 +110,14 @@ val surfaceContainerLowLight = Color(0xFFFFF0F1)
 val surfaceContainerLight = Color(0xFFFBEAEB)
 val surfaceContainerHighLight = Color(0xFFF5E4E6)
 val surfaceContainerHighestLight = Color(0xFFEFDEE0)
+val denyLight = Color(0xFF904B40)
+val onDenyLight = Color(0xFFFFFFFF)
+val denyContainerLight = Color(0xFFFFDAD4)
+val onDenyContainerLight = Color(0xFF3A0905)
+val acceptLight = Color(0xFF406836)
+val onAcceptLight = Color(0xFFFFFFFF)
+val acceptContainerLight = Color(0xFFC0EFB0)
+val onAcceptContainerLight = Color(0xFF002200)
 
 val primaryDark = Color(0xFFFFB1C1)
 val onPrimaryDark = Color(0xFF551D2C)
@@ -115,6 +154,14 @@ val surfaceContainerLowDark = Color(0xFF22191B)
 val surfaceContainerDark = Color(0xFF261D1F)
 val surfaceContainerHighDark = Color(0xFF312829)
 val surfaceContainerHighestDark = Color(0xFF3C3234)
+val denyDark = Color(0xFFFFB4A8)
+val onDenyDark = Color(0xFF561E16)
+val denyContainerDark = Color(0xFF73342A)
+val onDenyContainerDark = Color(0xFFFFDAD4)
+val acceptDark = Color(0xFFA5D395)
+val onAcceptDark = Color(0xFF11380B)
+val acceptContainerDark = Color(0xFF285020)
+val onAcceptContainerDark = Color(0xFFC0EFB0)
 
 val atoriDarkColorScheme = darkColorScheme(
     primary = primaryDark,
@@ -195,11 +242,15 @@ val atoriLightColorScheme = lightColorScheme(
 // 包装的一层主题，你可以理解为在毛坯房上刷油漆
 @Composable
 fun AtoriTheme(
-    useDarkTheme: Boolean = isSystemInDarkTheme(),
+    useDarkTheme: Boolean = isSystemInDarkTheme(), // Rewrite LocalIsDarkTheme
+    darkColorScheme: ColorScheme = atoriDarkColorScheme,
+    lightColorScheme: ColorScheme = atoriLightColorScheme,
     content: @Composable () -> Unit
-) {
-    val colors = if (useDarkTheme) atoriDarkColorScheme
-    else atoriLightColorScheme
+) = CompositionLocalProvider(LocalUseDarkTheme provides useDarkTheme) {
+    println("重组AtoriTheme：${useDarkTheme} ${LocalUseDarkTheme.current}")
+
+    val colors = if (useDarkTheme) darkColorScheme
+    else lightColorScheme
 
     MaterialTheme(
         colorScheme = colors, // 颜色

@@ -47,19 +47,29 @@ import app.atori.utils.ResUtils.text
 fun DemoChatPage() {
     val strokeColor = MaterialTheme.colorScheme.outlineVariant
     var showInfoPanel by remember { mutableStateOf(false) }
-    var showCallDialog by remember { mutableStateOf(false) }
-    var showCallDialog2 by remember { mutableStateOf(false) }
+    var showVoiceCallDialog by remember { mutableStateOf(false) }
+    var showVideoCallDialog by remember { mutableStateOf(false) }
+    var showIncomingCallDialog by remember { mutableStateOf(false) }
 
-    if (showCallDialog) DialogBase({ showCallDialog = false }) {
+    if (showVoiceCallDialog) DialogBase({ showVoiceCallDialog = false }) {
         Box(Modifier.height(IntrinsicSize.Min).width(IntrinsicSize.Min)) {
             DemoVoiceCallPage(true) {
-                showCallDialog = false
+                showVoiceCallDialog = false
             }
         }
-    } else if (showCallDialog2) DialogBase({ showCallDialog2 = false }) {
-        Box(Modifier.height(IntrinsicSize.Min).width(IntrinsicSize.Min)) { // TODO: 图片还是会撑满高度
+    } else if (showVideoCallDialog) DialogBase({ showVideoCallDialog = false }) {
+        Box(Modifier.height(IntrinsicSize.Min).width(IntrinsicSize.Min)) {
             DemoVideoCallPage(true) {
-                showCallDialog2 = false
+                showVideoCallDialog = false
+            }
+        }
+    } else if (showIncomingCallDialog) DialogBase({ showIncomingCallDialog = false }) {
+        Box(Modifier.height(IntrinsicSize.Min).width(IntrinsicSize.Min)) { // TODO: 图片还是会撑满高度
+            DemoIncomingCallPage(true, true, {
+                showIncomingCallDialog = false
+            }) {
+                showIncomingCallDialog = false
+                showVoiceCallDialog = true
             }
         }
     }
@@ -91,16 +101,18 @@ fun DemoChatPage() {
 
         // Pinned Messages
         AtoriIconButton(Res.drawable.ic_pinned_msgs_24px, Res.string.pinned_messages.text) {
-            showCallDialog2 = true
+            showVideoCallDialog = true
         }
 
         // Call
         AtoriIconButton(Res.drawable.ic_call_24px, Res.string.call.text) {
-            showCallDialog = true
+            showVoiceCallDialog = true
         }
 
         // Search Messages
-        AtoriIconButton(Res.drawable.ic_search_msgs_24px, Res.string.search_messages.text)
+        AtoriIconButton(Res.drawable.ic_search_msgs_24px, Res.string.search_messages.text){
+            showIncomingCallDialog = true
+        }
 
         // Info
         AtoriIconButton(

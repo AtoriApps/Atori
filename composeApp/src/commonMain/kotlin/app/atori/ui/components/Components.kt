@@ -28,10 +28,13 @@ import androidx.compose.ui.unit.dp
 import app.atori.resources.Res
 import app.atori.resources.app_name
 import app.atori.resources.ic_atori_logo_24px
+import app.atori.ui.atoriAcceptColor
+import app.atori.ui.atoriDenyColor
 import app.atori.ui.atoriIconButtonFilledColor
 import app.atori.ui.atoriIconButtonSpecialErrorColor
 import app.atori.ui.atoriIconButtonSpecialNotActivatedColor
 import app.atori.ui.atoriIconButtonStandardColor
+import app.atori.utils.ComposeUtils.buttonColors
 import app.atori.utils.ResUtils.text
 import app.atori.utils.ResUtils.vector
 import org.jetbrains.compose.resources.DrawableResource
@@ -185,9 +188,12 @@ object AtoriIconButtonStyles {
     val SpecialNotActivated
         @Composable
         get() = atoriIconButtonSpecialNotActivatedColor
-    val SpecialError
+    val SpecialDeny
         @Composable
-        get() = atoriIconButtonSpecialErrorColor
+        get() = atoriDenyColor.buttonColors
+    val SpecialAccept
+        @Composable
+        get() = atoriAcceptColor.buttonColors
     val Filled
         @Composable
         get() = atoriIconButtonFilledColor
