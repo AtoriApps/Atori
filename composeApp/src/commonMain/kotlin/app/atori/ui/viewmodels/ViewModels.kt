@@ -1,29 +1,15 @@
-package app.atori.viewModels
+package app.atori.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
-import app.atori.databases.AtoriDatabase
-import app.atori.entities.AccountEntity
-import app.atori.entities.MessageEntity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
-import org.jivesoftware.smack.XMPPConnection
-import org.jivesoftware.smack.chat2.ChatManager
-import org.jivesoftware.smack.chat2.IncomingChatMessageListener
-import org.jivesoftware.smack.tcp.XMPPTCPConnection
-import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration
-import org.jivesoftware.smackx.delay.packet.DelayInformation
-import org.jxmpp.jid.impl.JidCreate
-import java.util.*
+import app.atori.resources.*
+import app.atori.ui.models.NavTabItem
 
+/*
 class XmppViewModel(
-    private val atoriDatabase: AtoriDatabase,
+    private val appDatabase: AppDatabase,
 ) : ViewModel() {
-    private val messageDao = atoriDatabase.getMessageDao()
-    private val accountDao = atoriDatabase.getAccountDao()
+    private val messageDao = appDatabase.messageDao()
+    private val accountDao = appDatabase.accountDao()
 
     val messages: Flow<List<MessageEntity>> = messageDao.getAllMessages()
     val accounts: Flow<List<AccountEntity>> = accountDao.getAllAccounts()
@@ -167,4 +153,4 @@ class XmppViewModel(
     companion object {
         const val DEFAULT_DOMAIN = "suchat.org"
     }
-}
+}*/

@@ -23,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.dp
-import app.atori.misc.DemoData
+import app.atori.misc.DemoConstants
 import app.atori.resources.Res
 import app.atori.resources.call
 import app.atori.resources.hide_info_panel
@@ -88,7 +88,7 @@ fun DemoChatPage() {
         // Header
         Column(Modifier.weight(1F)) {
             Text(
-                DemoData.userName,
+                DemoConstants.userName,
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.titleMedium
             )

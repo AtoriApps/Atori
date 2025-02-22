@@ -1,10 +1,9 @@
 [versions]
-kotlin = "2.0.20" # 语言版本
-kotlinpoet = "1.14.2"
-kotlinx-coroutines = "1.8.1" # Kotlin 协程版本
-ksp = "2.0.20-1.0.25" # Kotlin 符号处理器 版本：语言版本-KSP版本
+kotlin = "2.1.0" # 语言版本
+kotlinx-coroutines = "1.10.1" # Kotlin 协程版本
+ksp = "2.1.0-1.0.29" # Kotlin 符号处理器 版本：语言版本-KSP版本
 
-agp = "8.7.2" # 安卓 Gradle 插件版本
+agp = "8.7.3" # 安卓 Gradle 插件版本
 
 android-compileSdk = "35" # 安卓编译SDK版本：安卓15
 android-targetSdk = "35" # 安卓目标SDK版本：安卓15
@@ -13,27 +12,35 @@ android-minSdk = "24" # 安卓最小SDK版本：安卓7
 androidx-appcompat = "1.7.0" # 安卓X APP兼容 版本：我们用稳定版，检查更新：https://developer.android.google.cn/jetpack/androidx/releases/appcompat
 androidx-core-ktx = "1.15.0" # 安卓X 核心KTX 版本：我们用稳定版，检查更新：https://developer.android.google.cn/jetpack/androidx/releases/core
 
-jetpack-compose = "1.7.0" # Compose Multiplatform 版本：我们用稳定版，检查更新：https://github.com/jetbrains/compose-multiplatform/releases
+jetpack-compose = "1.7.3" # Compose Multiplatform 版本：我们用稳定版，检查更新：https://github.com/jetbrains/compose-multiplatform/releases
 
-navigationCompose = "2.8.0-alpha10" # Compose导航库 版本：我们用 Compose Multiplatform 要求的版本
-androidx-lifecycle = "2.8.3"# 安卓X 生命周期 版本：我们用 Compose Multiplatform 要求的版本
-androidx-activityCompose = "1.9.3" # 安卓X Compose活动 版本：我们用稳定版，检查更新：https://developer.android.google.cn/jetpack/androidx/releases/activity
+koin = "4.1.0-Beta5" # Koin 版本：我们用最新版，检查更新：https://insert-koin.io/
+
+navigationCompose = "2.8.0-alpha11" # Compose导航库 版本：我们用 Compose Multiplatform 要求的版本
+androidx-lifecycle = "2.8.4"# 安卓X 生命周期 版本：我们用 Compose Multiplatform 要求的版本
+androidx-activityCompose = "1.10.0" # 安卓X Compose活动 版本：我们用稳定版，检查更新：https://developer.android.google.cn/jetpack/androidx/releases/activity
 
 smackVersion = "4.5.0-beta5" # Smack 版本：我们用开发版（为了支持Java11），检查更新：https://igniterealtime.org/projects/smack/
 
-room = "2.7.0-alpha11" # Room 版本：我们用开发版（为了支持 Compose Multiplatform），检查更新：https://developer.android.google.cn/jetpack/androidx/releases/room
+room = "2.7.0-alpha13" # Room 版本：我们用开发版（为了支持 Compose Multiplatform），检查更新：https://developer.android.google.cn/jetpack/androidx/releases/room
+dataStore = "1.1.2" # DataStore 版本：我们用稳定版（为了支持 Compose Multiplatform），检查更新：https://developer.android.google.cn/jetpack/androidx/releases/datastore
 
 [libraries]
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core-ktx" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "dataStore" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 androidx-lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
 kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 compose-navigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
+koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
+koin-compose-vmNavi = { module = "io.insert-koin:koin-compose-viewmodel-navigation", version.ref = "koin" }
 smack-jvm = { module = "org.igniterealtime.smack:smack-java11", version.ref = "smackVersion" }
 smack-art = { module = "org.igniterealtime.smack:smack-android", version.ref = "smackVersion" }
 smack-tcp = { module = "org.igniterealtime.smack:smack-tcp", version.ref = "smackVersion" }

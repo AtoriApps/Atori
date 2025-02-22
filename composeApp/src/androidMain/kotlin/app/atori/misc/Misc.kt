@@ -7,14 +7,21 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import app.atori.ui.AndroidAtoriTheme
-import app.atori.ui.screens.DemoMainScreen
-import app.atori.stores.AndroidAppStateStore
+import org.jivesoftware.smack.android.AndroidSmackInitializer
 
-class AndroidApplication : Application() {
+class AndroidApp : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        AndroidAppStateStore.init(applicationContext)
+        appContext = this
+
+        runCatching {
+            AndroidSmackInitializer.initialize(this)
+        }
+    }
+
+    companion object{
+        lateinit var appContext: AndroidApp
     }
 }
 

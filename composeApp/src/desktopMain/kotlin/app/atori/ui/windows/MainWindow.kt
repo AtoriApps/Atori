@@ -10,7 +10,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import app.atori.ui.AtoriTheme
@@ -22,7 +21,8 @@ import app.atori.resources.ic_atori_icon_dark
 import app.atori.ui.panels.MainPanel
 import app.atori.ui.panels.SidePanel
 import app.atori.ui.views.MainWindowTopBar
-import app.atori.utils.ComposeUtils.van
+import app.atori.utils.ComposeUtils.only
+import app.atori.utils.MultiplatformLogUtils
 import org.jetbrains.compose.resources.painterResource
 
 // 怎么确定只有单例
@@ -44,12 +44,11 @@ fun MainWindow(appScope: ApplicationScope) {
             Surface(
                 Modifier.fillMaxSize()
                     // 窗口基本样式，另外发现这 Surface 和 IconButton 的主题色有关
-                    .van(!MainWindowDelegate.isMaximized) { clip(rcs17) }
+                    .only(!MainWindowDelegate.isMaximized) { clip(rcs17) }
                     .background(MaterialTheme.colorScheme.surface)
-                    .van(!MainWindowDelegate.isMaximized) {
-                        border(1.dp, MaterialTheme.colorScheme.outlineVariant, rcs17)
+                    .only(!MainWindowDelegate.isMaximized) {
+                        border(1.dp, MaterialTheme.colorScheme.outlineVariant, rcs17).padding(1.dp)
                     }
-                    .van(!MainWindowDelegate.isMaximized) { padding(1.dp) }
                 // FIXME: 以后限制窗口大小
             ) {
                 // 窗口主骨架
@@ -69,6 +68,8 @@ fun MainWindow(appScope: ApplicationScope) {
 
 // 以后为了解耦可能还需要抽成单独的Window函数然后里面自管自己的窗口状态
 object MainWindowDelegate {
+    private const val TAG = "MainWindowDelegate"
+
     private var ensured = false
 
     private lateinit var mAppScope: ApplicationScope
@@ -86,10 +87,10 @@ object MainWindowDelegate {
             mWindowState = windowState
         }.onSuccess {
             ensured = true
-            println("窗口绑定正确")
+            MultiplatformLogUtils.d(TAG, "窗口绑定正确")
         }.onFailure {
             ensured = false
-            println("窗口绑定错误\n${it.stackTraceToString()}")
+            MultiplatformLogUtils.e(TAG, "窗口绑定错误", it)
         }
     }
 

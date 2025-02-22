@@ -1,7 +1,7 @@
-package app.atori.stores
+package app.atori.data.states
 
 import androidx.compose.runtime.mutableStateOf
 
-object DemoStateStore {
+class DemoState {
     val currentChat = mutableStateOf(-1)
 }

@@ -1,6 +1,5 @@
 package app.atori.ui.pages
 
-// import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,12 +19,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import app.atori.misc.DemoData
-import app.atori.models.DemoChatModel
+import app.atori.misc.DemoConstants
+import app.atori.data.local.models.DemoChatModel
+import app.atori.data.states.DemoState
 import app.atori.resources.*
 import app.atori.resources.Res
 import app.atori.resources.ic_chat_24px
-import app.atori.stores.DemoStateStore
 import app.atori.ui.components.AtoriIconButton
 import app.atori.ui.components.AtoriIconButtonStyles
 import app.atori.ui.components.PreferenceGroup
@@ -33,7 +32,7 @@ import app.atori.ui.components.PreferenceItem
 import app.atori.ui.components.SwitchPreferenceItem
 import app.atori.ui.views.DraggableImageInBoxForVideoCallPage
 import app.atori.utils.ComposeUtils.dpPx
-import app.atori.utils.ComposeUtils.van
+import app.atori.utils.ComposeUtils.only
 import app.atori.utils.ResUtils.imgBmp
 import app.atori.utils.ResUtils.text
 import app.atori.utils.ResUtils.vector
@@ -41,6 +40,7 @@ import app.atori.utils.TimestampUtils.timeStr
 import app.atori.utils.TimestampUtils.timestamp
 import app.atori.ui.views.TitledActionIconButtonForCallPage
 import org.jetbrains.compose.resources.DrawableResource
+import org.koin.compose.koinInject
 
 @Composable
 fun DemoChatDetailsPage(
@@ -73,11 +73,11 @@ fun DemoChatDetailsPage(
             horizontalAlignment = Alignment.Companion.CenterHorizontally
         ) {
             Image(
-                DemoData.userAvatar, DemoData.userName,
+                DemoConstants.userAvatar, DemoConstants.userName,
                 Modifier.padding(bottom = esDp).size(128.dp).clip(CircleShape)
             )
             Text(
-                DemoData.userName, Modifier.padding(bottom = 8.dp),
+                DemoConstants.userName, Modifier.padding(bottom = 8.dp),
                 MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.headlineSmall
             )
@@ -115,12 +115,12 @@ fun DemoChatDetailsPage(
         PreferenceGroup(Res.string.information.text) {
             PreferenceItem(
                 Res.drawable.ic_id_platform_24px,
-                Res.string.a_contact_from.text(DemoData.userPlatform),
-                Res.string.you_re_using.text(DemoData.userJid)
+                Res.string.a_contact_from.text(DemoConstants.userPlatform),
+                Res.string.you_re_using.text(DemoConstants.userJid)
             )
             PreferenceItem(
                 Res.drawable.ic_id_card_24px, Res.string.tap_to_copy_other_party_s_account.text,
-                DemoData.userJid
+                DemoConstants.userJid
             )
             PreferenceItem(Res.drawable.ic_qr_code_24px, Res.string.generate_qr_code.text)
             PreferenceItem(
@@ -202,9 +202,9 @@ fun DemoVoiceCallPage(
     Modifier.fillMaxSize()
         .background(if (isInDialog) MaterialTheme.colorScheme.surfaceContainerHigh else MaterialTheme.colorScheme.surface)
         .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top))
-        .van(isInDialog) { padding(8.dp) },
+        .only(isInDialog) { padding(8.dp) },
 ) {
-    Column(Modifier.fillMaxWidth().weight(1F).van(isInDialog) {
+    Column(Modifier.fillMaxWidth().weight(1F).only(isInDialog) {
         clip(RoundedCornerShape(20.dp))
             .background(MaterialTheme.colorScheme.surface).padding(bottom = 48.dp)
     }) {// 标题栏与时间
@@ -230,16 +230,16 @@ fun DemoVoiceCallPage(
             Alignment.CenterHorizontally
         ) {
             Image(
-                DemoData.userAvatar, DemoData.userName,
+                DemoConstants.userAvatar, DemoConstants.userName,
                 Modifier.padding(bottom = sOr24).size(128.dp)
                     .clip(CircleShape)
             )
             Text(
-                DemoData.userName, Modifier.padding(bottom = 8.dp),
+                DemoConstants.userName, Modifier.padding(bottom = 8.dp),
                 MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.headlineSmall
             )
             Text(
-                DemoData.userJid,
+                DemoConstants.userJid,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.bodyLarge
             )
@@ -251,7 +251,7 @@ fun DemoVoiceCallPage(
     val sOrSE = (if (isInDialog) 16 else 48).dp
     Column(
         Modifier.fillMaxWidth().clip(RoundedCornerShape(topStart = ebDp, topEnd = ebDp))
-            .van(!isInDialog) { background(MaterialTheme.colorScheme.surfaceContainerHigh) }
+            .only(!isInDialog) { background(MaterialTheme.colorScheme.surfaceContainerHigh) }
             .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Bottom)) // FIXME: 是否应该抽离
             .padding(
                 top = if (isInDialog) 16.dp else 32.dp,
@@ -290,7 +290,7 @@ fun DemoVideoCallPage(
     onClickClose: () -> Unit = {}
 ) = Column(
     Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surfaceContainerHigh)
-        .van(isInDialog) { padding(8.dp).clip(RoundedCornerShape(20.dp)) }
+        .only(isInDialog) { padding(8.dp).clip(RoundedCornerShape(20.dp)) }
 ) {
     // 标题栏与时间
     Box(
@@ -300,7 +300,7 @@ fun DemoVideoCallPage(
         Image(
             Res.drawable.img_video_call_demo.imgBmp,
             Res.string.call.text,
-            Modifier.van(isInDialog, { fillMaxSize() }) { size(300.dp, 400.dp) },
+            Modifier.only(isInDialog, { fillMaxSize() }) { size(300.dp, 400.dp) },
             contentScale = ContentScale.Crop
         )
 
@@ -354,11 +354,11 @@ fun DemoVideoCallPage(
             ), horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            DemoData.userName, Modifier.padding(bottom = 8.dp),
+            DemoConstants.userName, Modifier.padding(bottom = 8.dp),
             MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.headlineSmall
         )
         Text(
-            DemoData.userJid, Modifier.padding(bottom = (if (isInDialog) 16 else 24).dp),
+            DemoConstants.userJid, Modifier.padding(bottom = (if (isInDialog) 16 else 24).dp),
             MaterialTheme.colorScheme.onSurfaceVariant,
             style = MaterialTheme.typography.bodyLarge
         )
@@ -403,7 +403,7 @@ fun DemoIncomingCallPage(
     Modifier.fillMaxSize()
         .background(if (isInDialog) MaterialTheme.colorScheme.surfaceContainerHigh else MaterialTheme.colorScheme.surface)
         .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top))
-        .van(isInDialog) {
+        .only(isInDialog) {
             padding(8.dp).clip(RoundedCornerShape(20.dp))
                 .background(MaterialTheme.colorScheme.surface)
         },
@@ -428,16 +428,16 @@ fun DemoIncomingCallPage(
             Alignment.CenterHorizontally
         ) {
             Image(
-                DemoData.userAvatar, DemoData.userName,
+                DemoConstants.userAvatar, DemoConstants.userName,
                 Modifier.padding(bottom = sOr24).size(128.dp)
                     .clip(CircleShape)
             )
             Text(
-                DemoData.userName, Modifier.padding(bottom = 8.dp),
+                DemoConstants.userName, Modifier.padding(bottom = 8.dp),
                 MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.headlineSmall
             )
             Text(
-                DemoData.userJid,
+                DemoConstants.userJid,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.bodyLarge
             )
@@ -447,7 +447,7 @@ fun DemoIncomingCallPage(
                 .height(if (isInDialog) 48.dp else 64.dp)
         ) {
             Text(
-                DemoData.userJid, Modifier.align(Alignment.Center),
+                DemoConstants.userJid, Modifier.align(Alignment.Center),
                 MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodyLarge
             )
@@ -493,6 +493,10 @@ fun DemoIncomingCallPage(
 
 @Composable
 fun DemoChatsPage() {
+    val TAG = "DemoChatsPage"
+
+    val demoState = koinInject<DemoState>()
+
     @Composable
     fun ChatsPageChatItem(
         demoChatEntity: DemoChatModel,
@@ -617,8 +621,10 @@ fun DemoChatsPage() {
             verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             itemsIndexed(demoConversations) { index, chat ->
-                ChatsPageChatItem(chat, index == DemoStateStore.currentChat.value) {
-                    DemoStateStore.currentChat.value = index
+                ChatsPageChatItem(chat, index == demoState.currentChat.value) {
+                    demoState.currentChat.value = index
+                    // demoViewModel.updateChat(index)
+                    // MultiplatformLogUtils.d(TAG, "妈的，哥们就在这里设置：$index")
                 }
             }
         }

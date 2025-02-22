@@ -43,12 +43,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import app.atori.misc.DemoData
-import app.atori.models.DemoMessageBodyType
-import app.atori.models.DemoMessageBodyType.*
-import app.atori.models.DemoMessageModel
-import app.atori.models.DemoMessageReactionModel
-import app.atori.models.DemoMessageType
+import app.atori.misc.DemoConstants
+import app.atori.data.local.models.DemoMessageBodyType
+import app.atori.data.local.models.DemoMessageModel
+import app.atori.data.local.models.DemoMessageReactionModel
+import app.atori.data.local.models.DemoMessageType
 import app.atori.resources.Res
 import app.atori.resources.add_reaction
 import app.atori.resources.call
@@ -70,7 +69,6 @@ import app.atori.utils.ResUtils.vector
 import app.atori.utils.TimestampUtils.timeStr
 import app.atori.utils.TimestampUtils.timestamp
 import org.jetbrains.compose.resources.DrawableResource
-import kotlin.collections.forEach
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalLayoutApi::class)
@@ -104,7 +102,7 @@ fun DemoChatView() {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                "@${DemoData.userName}",
+                "@${DemoConstants.userName}",
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
@@ -167,20 +165,20 @@ fun DemoChatView() {
         reactions: List<DemoMessageReactionModel>
     ) {
         when (messageType) {
-            TEXT -> Text(
+            DemoMessageBodyType.TEXT -> Text(
                 messageData as String,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
 
-            IMAGE -> Image(
+            DemoMessageBodyType.IMAGE -> Image(
                 (messageData as DrawableResource).imgBmp,
-                DemoData.userName,
+                DemoConstants.userName,
                 Modifier.size(400.dp, 280.dp).clip(MaterialTheme.shapes.medium),
                 contentScale = ContentScale.Crop
             )
 
-            NONE -> IllegalStateException("Message type is NONE.")
+            DemoMessageBodyType.NONE -> IllegalStateException("Message type is NONE.")
         }
         if (reactions.isNotEmpty()) FlowRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -210,7 +208,7 @@ fun DemoChatView() {
     ) {
         Box(Modifier.width(64.dp), Alignment.CenterStart) {
             Image(
-                DemoData.userAvatar, DemoData.userName,
+                DemoConstants.userAvatar, DemoConstants.userName,
                 Modifier.size(40.dp).clip(CircleShape)
             )
         }
@@ -220,7 +218,7 @@ fun DemoChatView() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    DemoData.userName,
+                    DemoConstants.userName,
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 1,

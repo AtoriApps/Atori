@@ -1,8 +1,10 @@
-package app.atori.models
+package app.atori.data.local.models
 
-import androidx.compose.runtime.Composable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import org.jetbrains.compose.resources.DrawableResource
 
+// Demo 模型
 
 data class DemoChatModel(
     val avatar: DrawableResource,
@@ -13,13 +15,6 @@ data class DemoChatModel(
     val pinned: Boolean,
     val muted: Boolean,
     val sendState: Int
-)
-
-data class NavTabItem(
-    val icon: DrawableResource,
-    val selectedIcon: DrawableResource,
-    val name: String,
-    val view: @Composable () -> Unit
 )
 
 enum class DemoMessageType {
@@ -49,4 +44,21 @@ data class DemoMessageModel(
     val messageType: DemoMessageType,
     val messageBodyType: DemoMessageBodyType = DemoMessageBodyType.NONE,
     val reactions: List<DemoMessageReactionModel> = emptyList()
+)
+
+// 数据库模型（实体）
+
+@Entity(tableName = "messages")
+data class MessageEntity(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val fromUser: String,
+    val messageBody: String,
+    val timestamp: Long
+)
+
+@Entity(tableName = "accounts")
+data class AccountEntity(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val jid: String,
+    val password: String,
 )

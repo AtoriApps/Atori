@@ -10,7 +10,7 @@ import java.util.*
 // 版本代码是yyyyMMdd动态生成
 val verCode = SimpleDateFormat("yyyyMMdd").format(Date()).toInt()
 // 当实现计划时记得撞♂版本号
-val verName = "0.0.3"
+val verName = "0.1.0"
 // 包名
 val appId = "app.atori"
 
@@ -33,7 +33,7 @@ kotlin {
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17)
+            jvmTarget.set(JvmTarget.JVM_21)
         }
     }
 
@@ -63,12 +63,19 @@ kotlin {
             implementation(compose.preview)
             implementation(compose.uiTooling)
 
-            implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.androidx.lifecycle.viewmodel)
+            implementation(libs.androidx.lifecycle.runtime.compose)
+
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
+            implementation(libs.koin.compose.vmNavi)
 
             implementation(libs.androidx.room.runtime)
             implementation(libs.androidx.room.ktx)
             implementation(libs.androidx.sqlite.bundled)
+
+            implementation(libs.androidx.datastore.preferences)
 
             implementation(libs.smack.tcp)
             implementation(libs.smack.im)
@@ -130,9 +137,6 @@ android {
     namespace = appId
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    sourceSets["main"].res.srcDirs("src/androidMain/res")
-
     defaultConfig {
         applicationId = appId
         minSdk = libs.versions.android.minSdk.get().toInt()
@@ -150,20 +154,13 @@ android {
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    buildFeatures {
-        compose = true
-    }
-
-    dependencies {
-        debugImplementation(compose.uiTooling)
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
     // Smack的xpp3冲突解决
@@ -181,6 +178,7 @@ compose.resources {
     generateResClass = auto
 }
 
+// 打包会报错
 compose.desktop {
     application {
         mainClass = "$appId.InitAppKt"

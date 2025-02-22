@@ -5,24 +5,37 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import app.atori.models.NavTabItem
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import app.atori.data.states.DemoState
+import app.atori.misc.DemoConstants
 import app.atori.ui.pages.EmptyPage
-import app.atori.stores.DesktopAppStateStore
 import app.atori.resources.*
 import app.atori.resources.Res
-import app.atori.stores.AppStateStore
-import app.atori.stores.DemoStateStore
 import app.atori.ui.components.AtoriIconButton
 import app.atori.ui.components.AtoriIconButtonStyles
+import app.atori.ui.models.NavTabItem
 import app.atori.ui.pages.DemoChatPage
+import app.atori.ui.pages.DemoChatsPage
+import app.atori.ui.viewmodels.SidePanelViewModel
 import app.atori.utils.ResUtils.text
+import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun SidePanel() {
+    // 创建 NavController
+    val tabNaviController = rememberNavController()
+
+    val sidePanelViewModel = koinViewModel<SidePanelViewModel>()
+
     @Composable
     fun ItemButton(
         sidePanelItem: NavTabItem,
@@ -43,43 +56,68 @@ fun SidePanel() {
         ) {
             // 顶排按钮
             Column(Modifier.weight(1F), Arrangement.spacedBy(4.dp)) {
-                AppStateStore.navTabItems.forEachIndexed { index, tab ->
-                    ItemButton(tab, index == AppStateStore.currentNavTab.value) {
-                        AppStateStore.currentNavTab.value = index
+                // 通过 currentBackStackEntryAsState 监听当前页面，以便设置选中状态
+                val navBackStackEntry by tabNaviController.currentBackStackEntryAsState()
+                val currentRoute = navBackStackEntry?.destination?.route
+
+                DemoConstants.navTabItems.forEach { tab ->
+                    ItemButton(tab, currentRoute == tab.route) {
+                        if (currentRoute != tab.route) {
+                            tabNaviController.navigate(tab.route) {
+                                launchSingleTop = true
+                            }
+                        }
                     }
                 }
             }
             // 底排按钮
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 AtoriIconButton(
-                    if (DesktopAppStateStore.sidePanelExpanded.value) Res.drawable.ic_panel_narrow_24px
+                    if (sidePanelViewModel.sidePanelExpanded.value) Res.drawable.ic_panel_narrow_24px
                     else Res.drawable.ic_panel_24px, Res.string.expand_or_side_panel.text, 48
                 ) {
-                    DesktopAppStateStore.sidePanelExpanded.value =
-                        !DesktopAppStateStore.sidePanelExpanded.value
+                    sidePanelViewModel.sidePanelExpanded.value =
+                        !sidePanelViewModel.sidePanelExpanded.value
                 }
             }
         }
 
         // TODO:当前面板容器
-        if (DesktopAppStateStore.sidePanelExpanded.value) {
-            Box(
-                Modifier.padding(end = 8.dp).width(300.dp).fillMaxHeight()
+        if (sidePanelViewModel.sidePanelExpanded.value) {
+            NavHost(
+                navController = tabNaviController,
+                startDestination = "chats",
+                modifier = Modifier.padding(end = 8.dp).width(300.dp).fillMaxHeight()
                     .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-                    .background(MaterialTheme.colorScheme.surfaceContainerHigh),
-                Alignment.Center
+                    .background(MaterialTheme.colorScheme.surfaceContainerHigh)
             ) {
-                AppStateStore.navTabItems[AppStateStore.currentNavTab.value].view()
+                // 会话列表页面
+                composable("chats") {
+                    DemoChatsPage()
+                }
+
+                // 联系人列表页面
+                composable("contacts") {
+                    Text("Contacts")
+                }
+
+                // 发现页面
+                composable("explore") {
+                    Text("Explore")
+                }
             }
         }
     }
 }
 
+// TODO：IMPL in NaVi
 @Composable
 fun MainPanel() = Box(
     Modifier.fillMaxSize().clip(RoundedCornerShape(topStart = 16.dp))
         .background(MaterialTheme.colorScheme.surfaceContainer)
 ) {
-    if (DemoStateStore.currentChat.value != -1) DemoChatPage()
+    val demoViewModel = koinInject<DemoState>()
+
+    if (demoViewModel.currentChat.value != -1) DemoChatPage()
     else EmptyPage()
 }

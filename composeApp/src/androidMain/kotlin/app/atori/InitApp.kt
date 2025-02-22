@@ -1,25 +1,64 @@
 package app.atori
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import app.atori.data.states.DemoState
+import app.atori.di.androidAppModule
 import app.atori.misc.ComposeActivity
-import app.atori.stores.AndroidDemoStateStore
-import app.atori.stores.DemoStateStore
-import app.atori.ui.screens.DemoVoiceCallScreen
-import app.atori.ui.screens.DemoChatDetailsScreen
-import app.atori.ui.screens.DemoChatScreen
-import app.atori.ui.screens.DemoIncomingCallScreen
-import app.atori.ui.screens.DemoMainScreen
-import app.atori.ui.screens.DemoVideoCallScreen
+import app.atori.ui.screens.*
+import org.koin.compose.KoinApplication
+import org.koin.compose.koinInject
 
 
 class InitAppActivity : ComposeActivity() {
+    companion object {
+        private const val TAG = "InitAppActivity"
+    }
+
     @Composable
     override fun Content() {
-        if (AndroidDemoStateStore.isInIncomingCallScreen.value) DemoIncomingCallScreen()
-        else if (AndroidDemoStateStore.isInVideoCallScreen.value) DemoVideoCallScreen()
-        else if (AndroidDemoStateStore.isInVoiceCallScreen.value) DemoVoiceCallScreen()
-        else if (AndroidDemoStateStore.isInChatInfoScreen.value) DemoChatDetailsScreen()
-        else if (DemoStateStore.currentChat.value != -1) DemoChatScreen()
-        else DemoMainScreen()
+        // TODO：IMPL in NaVi
+        KoinApplication(application = {
+            modules(androidAppModule)
+        }) {
+            // 创建根导航控制器
+            val rootNaviController = rememberNavController()
+
+            val demoState = koinInject<DemoState>()
+
+            LaunchedEffect(demoState.currentChat.value) {
+                if (demoState.currentChat.value != -1) rootNaviController.navigate("chat")
+            }
+
+            NavHost(navController = rootNaviController, startDestination = "main") {
+                // 主界面，带有内部的选项卡导航
+                composable("main") {
+                    DemoMainScreen()
+                }
+
+                composable("chat") {
+                    DemoChatScreen(rootNaviController)
+                }
+
+                composable("chat_details") {
+                    DemoChatDetailsScreen(rootNaviController)
+                }
+
+                composable("video_call") {
+                    DemoVideoCallScreen(rootNaviController)
+                }
+
+                composable("voice_call") {
+                    DemoVoiceCallScreen(rootNaviController)
+                }
+
+                composable("incoming_call") {
+                    DemoIncomingCallScreen(rootNaviController)
+                }
+            }
+        }
     }
 }

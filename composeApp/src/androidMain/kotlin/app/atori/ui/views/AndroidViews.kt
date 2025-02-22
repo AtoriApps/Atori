@@ -2,7 +2,6 @@ package app.atori.ui.views
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,11 +16,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import app.atori.misc.DemoData
+import app.atori.misc.DemoConstants
 import app.atori.resources.Res
 import app.atori.resources.back
 import app.atori.resources.ic_back_24px
@@ -29,7 +27,6 @@ import app.atori.resources.ic_more_24px
 import app.atori.resources.last_seen_recently
 import app.atori.resources.more
 import app.atori.resources.online
-import app.atori.stores.AndroidDemoStateStore
 import app.atori.ui.components.AtoriIconButton
 import app.atori.utils.ResUtils.text
 
@@ -37,7 +34,7 @@ import app.atori.utils.ResUtils.text
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DemoScreensTopBar(
-    title: String = DemoData.userName,
+    title: String = DemoConstants.userName,
     subtitle: String = "${Res.string.online.text} • ${Res.string.last_seen_recently.text}",
     showSubtitle: Boolean = true,
     showMoreButton: Boolean = true,

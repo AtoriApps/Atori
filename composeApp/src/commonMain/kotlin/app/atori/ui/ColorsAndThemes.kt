@@ -5,7 +5,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.runtime.staticCompositionLocalOf
+import app.atori.utils.MultiplatformLogUtils
 import androidx.compose.ui.graphics.Color
 import app.atori.utils.ComposeUtils.opacity
 
@@ -247,7 +247,7 @@ fun AtoriTheme(
     lightColorScheme: ColorScheme = atoriLightColorScheme,
     content: @Composable () -> Unit
 ) = CompositionLocalProvider(LocalUseDarkTheme provides useDarkTheme) {
-    println("重组AtoriTheme：${useDarkTheme} ${LocalUseDarkTheme.current}")
+    MultiplatformLogUtils.d("重组AtoriTheme：${useDarkTheme} ${LocalUseDarkTheme.current}")
 
     val colors = if (useDarkTheme) darkColorScheme
     else lightColorScheme

@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -30,6 +29,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import app.atori.misc.DemoConstants
 import app.atori.resources.Res
 import app.atori.resources.call
 import app.atori.resources.chat_details
@@ -47,17 +52,15 @@ import app.atori.resources.more
 import app.atori.resources.pinned_messages
 import app.atori.resources.search_messages
 import app.atori.resources.send
-import app.atori.stores.AndroidDemoStateStore
-import app.atori.stores.AppStateStore
-import app.atori.stores.DemoStateStore
 import app.atori.ui.components.AtoriIconButton
 import app.atori.ui.components.AtoriMenuItem
 import app.atori.ui.components.PrefabAtoriLogoIcon
 import app.atori.ui.components.SimpleTextField
-import app.atori.ui.pages.DemoVoiceCallPage
 import app.atori.ui.pages.DemoChatDetailsPage
+import app.atori.ui.pages.DemoChatsPage
 import app.atori.ui.pages.DemoIncomingCallPage
 import app.atori.ui.pages.DemoVideoCallPage
+import app.atori.ui.pages.DemoVoiceCallPage
 import app.atori.ui.views.DemoChatView
 import app.atori.ui.views.DemoScreensTopBar
 import app.atori.ui.views.dialogs.AboutDialog
@@ -67,25 +70,30 @@ import app.atori.utils.ResUtils.imgBmp
 import app.atori.utils.ResUtils.text
 import app.atori.utils.ResUtils.vector
 
+// OLD
 @Composable
-fun DemoVoiceCallScreen() =
-    DemoVoiceCallPage { AndroidDemoStateStore.isInVoiceCallScreen.value = false }
+fun DemoVoiceCallScreen(rootNaviController: NavController) =
+    DemoVoiceCallPage { rootNaviController.popBackStack() }
 
 @Composable
-fun DemoVideoCallScreen() =
-    DemoVideoCallPage { AndroidDemoStateStore.isInVideoCallScreen.value = false }
+fun DemoVideoCallScreen(rootNaviController: NavController) =
+    DemoVideoCallPage { rootNaviController.popBackStack() }
 
 @Composable
-fun DemoIncomingCallScreen() =
+fun DemoIncomingCallScreen(rootNaviController: NavController) =
     DemoIncomingCallPage(false, true, {
-        AndroidDemoStateStore.isInIncomingCallScreen.value = false
+        rootNaviController.popBackStack()
     }) {
-        AndroidDemoStateStore.isInIncomingCallScreen.value = false
-        AndroidDemoStateStore.isInVoiceCallScreen.value = true
+        rootNaviController.navigate("voice_call") {
+            launchSingleTop = true
+        }
     }
 
 @Composable
 fun DemoMainScreen() {
+    // 创建 NavController
+    val tabNaviController = rememberNavController()
+
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun TopBar() {
@@ -95,7 +103,7 @@ fun DemoMainScreen() {
 
         if (showOneAtori)
             DialogBase({ showOneAtori = false }) {
-                OneAtoriDialog({ showAbout = true })
+                OneAtoriDialog { showAbout = true }
             }
 
         if (showAbout)
@@ -147,17 +155,28 @@ fun DemoMainScreen() {
 
     @Composable
     fun BottomBar() = NavigationBar {
-        AppStateStore.navTabItems.forEachIndexed { index, item ->
+
+        // 通过 currentBackStackEntryAsState 监听当前页面，以便设置选中状态
+        val navBackStackEntry by tabNaviController.currentBackStackEntryAsState()
+        val currentRoute = navBackStackEntry?.destination?.route
+
+        DemoConstants.navTabItems.forEach { tab ->
             NavigationBarItem(
                 icon = {
                     Icon(
-                        (if (AppStateStore.currentNavTab.value == index) item.selectedIcon else item.icon).vector,
-                        item.name
+                        (if (currentRoute == tab.route) tab.selectedIcon else tab.icon).vector,
+                        tab.name
                     )
                 },
-                label = { Text(item.name) },
-                selected = AppStateStore.currentNavTab.value == index,
-                onClick = { AppStateStore.currentNavTab.value = index },
+                label = { Text(tab.name) },
+                selected = currentRoute == tab.route,
+                onClick = {
+                    if (currentRoute != tab.route) {
+                        tabNaviController.navigate(tab.route) {
+                            launchSingleTop = true
+                        }
+                    }
+                },
                 alwaysShowLabel = false
             )
         }
@@ -165,18 +184,32 @@ fun DemoMainScreen() {
 
     Scaffold(topBar = { TopBar() }, bottomBar = { BottomBar() })
     { padding ->
-        Box(
-            Modifier
-                .fillMaxSize()
-                .padding(padding), Alignment.Center
+        // 使用 NavHost 定义导航图，起始页面设置为在线列表
+        NavHost(
+            navController = tabNaviController,
+            startDestination = "chats",
+            modifier = Modifier.padding(padding)
         ) {
-            AppStateStore.navTabItems[AppStateStore.currentNavTab.value].view()
+            // 会话列表页面
+            composable("chats") {
+                DemoChatsPage()
+            }
+
+            // 联系人列表页面
+            composable("contacts") {
+                Text("Contacts")
+            }
+
+            // 发现页面
+            composable("explore") {
+                Text("Explore")
+            }
         }
     }
 }
 
 @Composable
-fun DemoChatScreen() {
+fun DemoChatScreen(rootNaviController: NavController) {
     @Composable
     fun BottomBar() {
         var tempText by remember { mutableStateOf("") }
@@ -212,7 +245,9 @@ fun DemoChatScreen() {
     Scaffold(
         topBar = {
             DemoScreensTopBar(onClickTitle = {
-                AndroidDemoStateStore.isInChatInfoScreen.value = true
+                rootNaviController.navigate("chat_details") {
+                    launchSingleTop = true
+                }
             }, onClickMore = {
                 showMoreMenu = true
             }, showDropMenu = showMoreMenu, onDismissDropMenu = {
@@ -220,11 +255,14 @@ fun DemoChatScreen() {
             }, dropMenuContent = {
                 AtoriMenuItem(Res.string.pinned_messages.text, Res.drawable.ic_pinned_msgs_24px)
                 AtoriMenuItem(Res.string.call.text, Res.drawable.ic_call_24px) {
-                    AndroidDemoStateStore.isInVoiceCallScreen.value = true
+                    // AndroidDemoStateStore.isInVoiceCallScreen.value = true
+                    rootNaviController.navigate("voice_call") {
+                        launchSingleTop = true
+                    }
                 }
                 AtoriMenuItem(Res.string.search_messages.text, Res.drawable.ic_search_msgs_24px)
             }
-            ) { DemoStateStore.currentChat.value = -1 }
+            ) { rootNaviController.popBackStack() }
         },
         bottomBar = { BottomBar() })
     { padding ->
@@ -235,19 +273,27 @@ fun DemoChatScreen() {
 }
 
 @Composable
-fun DemoChatDetailsScreen() {
+fun DemoChatDetailsScreen(rootNaviController: NavController) {
     Scaffold(
         topBar = {
             DemoScreensTopBar(
                 Res.string.chat_details.text, showSubtitle = false, showMoreButton = false
-            ) { AndroidDemoStateStore.isInChatInfoScreen.value = false }
+            ) { rootNaviController.popBackStack() }
         })
     { padding ->
         Box(Modifier.padding(padding), Alignment.Center) {
             DemoChatDetailsPage(true, {
-                AndroidDemoStateStore.isInVideoCallScreen.value = true
-            }, { AndroidDemoStateStore.isInVoiceCallScreen.value = true }) {
-                AndroidDemoStateStore.isInIncomingCallScreen.value = true
+                rootNaviController.navigate("video_call") {
+                    launchSingleTop = true
+                }
+            }, {
+                rootNaviController.navigate("voice_call") {
+                    launchSingleTop = true
+                }
+            }) {
+                rootNaviController.navigate("incoming_call") {
+                    launchSingleTop = true
+                }
             }
         }
     }
