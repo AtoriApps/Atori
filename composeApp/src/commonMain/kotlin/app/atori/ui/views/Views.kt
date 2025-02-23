@@ -120,7 +120,7 @@ fun DemoChatView() {
 
     @Composable
     fun TimeLineBlock(timestamp: Long) = Row(
-        Modifier.fillMaxWidth().clickable(onClick = {}).padding(16.dp, 12.dp),
+        Modifier.fillMaxWidth().clickable(onClick = {}).padding(16.dp, 6.dp),
         Arrangement.spacedBy(8.dp),
         Alignment.CenterVertically
     ) {
@@ -139,7 +139,7 @@ fun DemoChatView() {
 
     @Composable
     fun ReadToHereBlock() = Row(
-        Modifier.fillMaxWidth().clickable(onClick = {}).padding(16.dp, 12.dp),
+        Modifier.fillMaxWidth().clickable(onClick = {}).padding(16.dp, 6.dp),
         Arrangement.spacedBy(8.dp),
         Alignment.CenterVertically
     ) {
@@ -203,8 +203,7 @@ fun DemoChatView() {
         reactions: List<DemoMessageReactionModel>
     ) = Row(
         Modifier.fillMaxWidth().clickable(onClick = {}).padding(16.dp, 4.dp),
-        Arrangement.spacedBy(8.dp),
-        Alignment.Top
+        verticalAlignment = Alignment.Top
     ) {
         Box(Modifier.width(64.dp), Alignment.CenterStart) {
             Image(
@@ -242,8 +241,7 @@ fun DemoChatView() {
         reactions: List<DemoMessageReactionModel>
     ) = Row(
         Modifier.fillMaxWidth().clickable(onClick = {}).padding(16.dp, 4.dp),
-        Arrangement.spacedBy(8.dp),
-        Alignment.Top
+        verticalAlignment = Alignment.Top
     ) {
         var isHovered by remember { mutableStateOf(false) }
 

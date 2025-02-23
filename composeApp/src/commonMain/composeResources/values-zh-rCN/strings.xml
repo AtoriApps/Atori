@@ -6,7 +6,9 @@
     <string name="scan">扫码</string>
     <string name="file_transfer">文件传输</string>
     <string name="num_accounts">%1$s 个账户</string>
+    <string name="num_workspaces">%1$s 个工作区</string>
     <string name="manage_accounts">管理账户</string>
+    <string name="manage_workspaces">管理工作区</string>
     <string name="archived_spam_blocked_etc">已归档、垃圾信息及屏蔽等</string>
     <string name="settings">设置</string>
     <string name="help_feedback">帮助与反馈</string>

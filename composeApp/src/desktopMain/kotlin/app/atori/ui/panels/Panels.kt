@@ -122,8 +122,29 @@ fun MainPanel() = Box(
     Modifier.fillMaxSize().clip(RoundedCornerShape(topStart = 16.dp))
         .background(MaterialTheme.colorScheme.surfaceContainer)
 ) {
-    val demoViewModel = koinInject<DemoState>()
+    val demoState = koinInject<DemoState>()
 
-    if (demoViewModel.currentChat.value != -1) DemoChatPage()
-    else EmptyPage()
+    val mainPanelNaviController = rememberNavController()
+
+    LaunchedEffect(demoState.currentChat.value) {
+        if (demoState.currentChat.value != -1) mainPanelNaviController.navigate("chat") {
+            launchSingleTop = true
+        }
+    }
+
+    NavHost(
+        navController = mainPanelNaviController,
+        startDestination = "empty"
+    ) {
+        composable("chat") {
+            DemoChatPage()
+        }
+
+        composable("empty") {
+            EmptyPage()
+        }
+    }
+
+    /*if (demoViewModel.currentChat.value != -1) DemoChatPage()
+    else EmptyPage()*/
 }

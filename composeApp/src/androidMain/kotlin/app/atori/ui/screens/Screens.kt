@@ -39,7 +39,7 @@ import org.koin.compose.koinInject
 
 // TODO：下面这个导航脑瘫，会导致进到新Chat界面，再返回却不是回到主界面
 @Composable
-fun DemoVoiceCallScreen(rootNaviController: NavController, fromDetail: Boolean) =
+fun DemoVoiceCallScreen(rootNaviController: NavController) =
     DemoVoiceCallPage {
         /*if (fromDetail) rootNaviController.popBackStack() else rootNaviController.navigate("chat") {
             popUpTo("video_call") { // 可选：从返回栈中移除 VideoCallScreen
@@ -47,32 +47,42 @@ fun DemoVoiceCallScreen(rootNaviController: NavController, fromDetail: Boolean) 
             }
             launchSingleTop = true // 可选：避免创建多个 ChatScreen 实例
         }*/
-        rootNaviController.popBackStack()
+        rootNaviController.navigate("chat") {
+            // 一撸到只剩主界面（喜）
+            popUpTo("chat") {
+                inclusive = true
+            }
+            launchSingleTop = true
+        }
     }
 
 @Composable
-fun DemoVideoCallScreen(rootNaviController: NavController, fromDetail: Boolean) =
+fun DemoVideoCallScreen(rootNaviController: NavController) =
     DemoVideoCallPage {
-        /*if (fromDetail) rootNaviController.popBackStack() else rootNaviController.navigate("chat") {
-            popUpTo("video_call") { // 可选：从返回栈中移除 VideoCallScreen
+        /*if (fromDetail) rootNaviController.popBackStack() else*/
+        rootNaviController.navigate("chat") {
+            // 一撸到只剩主界面（喜）
+            popUpTo("chat") {
                 inclusive = true
             }
-            launchSingleTop = true // 可选：避免创建多个 ChatScreen 实例
-        }*/
-        rootNaviController.popBackStack()
+            launchSingleTop = true
+        }
     }
 
 @Composable
 fun DemoIncomingCallScreen(rootNaviController: NavController) =
-    DemoIncomingCallPage(false, true, {
-        rootNaviController.popBackStack()
-    }) {
-        rootNaviController.navigate("voice_call/false") {
-            popUpTo("incoming_call") { // 接受：弹出当前来电测试界面
-                inclusive = true // 包含来电测试界面自身
+    DemoIncomingCallPage(
+        isInDialog = false, isVoiceCall = true,
+        onClickDeny = {
+            rootNaviController.popBackStack()
+        }, onClickAccept = {
+            rootNaviController.navigate("voice_call") {
+                // 把自己撅掉
+                popUpTo("incoming_call") {
+                    inclusive = true
+                }
             }
-        }
-    }
+        })
 
 @Composable
 fun DemoMainScreen() {
@@ -160,13 +170,9 @@ fun DemoMainScreen() {
                 onClick = {
                     if (currentRoute != tab.route) {
                         tabNaviController.navigate(tab.route) {
-                            // 优化 Tab 切换体验，避免在同一个 Tab 内重复创建实例
-                            popUpTo(tabNaviController.graph.findStartDestination().id) {
-                                saveState = true // 保存前一个 Tab 的状态
-                            }
-
+                            // Tab 切换特有的导航
+                            popUpTo(tabNaviController.graph.startDestinationId)
                             launchSingleTop = true // 避免创建多个相同的实例
-                            restoreState = true // 恢复前一个 Tab 的状态
                         }
                     }
                 },
@@ -281,7 +287,10 @@ fun DemoChatScreen(rootNaviController: NavController) {
             }, dropMenuContent = {
                 AtoriMenuItem(Res.string.pinned_messages.text, Res.drawable.ic_pinned_msgs_24px)
                 AtoriMenuItem(Res.string.call.text, Res.drawable.ic_call_24px) {
-                    rootNaviController.navigate("voice_call/false")
+                    rootNaviController.navigate("voice_call")
+
+                    // TODO：现在还要手动关
+                    showMoreMenu = false
                 }
                 AtoriMenuItem(Res.string.search_messages.text, Res.drawable.ic_search_msgs_24px)
             })
@@ -304,13 +313,15 @@ fun DemoChatDetailsScreen(rootNaviController: NavController) {
         })
     { padding ->
         Box(Modifier.padding(padding), Alignment.Center) {
-            DemoChatDetailsPage(true, {
-                rootNaviController.navigate("video_call/true")
-            }, {
-                rootNaviController.navigate("voice_call/true")
-            }) {
-                rootNaviController.navigate("incoming_call")
-            }
+            DemoChatDetailsPage(
+                showActions = true,
+                onClickVideoCall = {
+                    rootNaviController.navigate("video_call")
+                }, onClickVoiceCall = {
+                    rootNaviController.navigate("voice_call")
+                }, onClickIncomingCall = {
+                    rootNaviController.navigate("incoming_call")
+                })
         }
     }
 }

@@ -1,8 +1,8 @@
 package app.atori
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -10,9 +10,7 @@ import androidx.navigation.compose.rememberNavController
 import app.atori.data.states.DemoState
 import app.atori.di.androidAppModule
 import app.atori.misc.ComposeActivity
-import androidx.compose.runtime.getValue
 import app.atori.ui.screens.*
-import app.atori.utils.MultiplatformLogUtils
 import org.koin.compose.KoinApplication
 import org.koin.compose.koinInject
 
@@ -38,7 +36,10 @@ class InitAppActivity : ComposeActivity() {
             val demoState = koinInject<DemoState>()
 
             LaunchedEffect(demoState.currentChat.value) {
-                if (demoState.currentChat.value != -1) rootNaviController.navigate("chat")
+                if (demoState.currentChat.value != -1) rootNaviController.navigate("chat") {
+                    // 保留主界面在栈底
+                    launchSingleTop = true
+                }
             }
 
             NavHost(navController = rootNaviController, startDestination = "main") {
@@ -55,18 +56,12 @@ class InitAppActivity : ComposeActivity() {
                     DemoChatDetailsScreen(rootNaviController)
                 }
 
-                composable("video_call/{fromDetail}") { backStackEntry ->
-                    val fromDetail =
-                        backStackEntry.arguments?.getString("fromDetail") == "true"
-
-                    DemoVideoCallScreen(rootNaviController, fromDetail)
+                composable("video_call") {
+                    DemoVideoCallScreen(rootNaviController)
                 }
 
-                composable("voice_call/{fromDetail}") { backStackEntry ->
-                    val fromDetail =
-                        backStackEntry.arguments?.getString("fromDetail") == "true"
-
-                    DemoVoiceCallScreen(rootNaviController, fromDetail)
+                composable("voice_call") {
+                    DemoVoiceCallScreen(rootNaviController)
                 }
 
                 composable("incoming_call") {

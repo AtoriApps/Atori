@@ -20,15 +20,18 @@ import app.atori.ui.components.AtoriIconButton
 import app.atori.ui.components.PrefabAtoriLogoIcon
 import app.atori.resources.*
 import app.atori.ui.components.SimpleTextField
+import app.atori.ui.viewmodels.MainWindowViewModel
 import app.atori.utils.ResUtils.imgBmp
 import app.atori.ui.views.dialogs.AboutDialog
 import app.atori.ui.views.dialogs.DialogBase
 import app.atori.ui.views.dialogs.OneAtoriDialog
-import app.atori.ui.windows.MainWindowDelegate
 import app.atori.utils.ResUtils.text
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun MainWindowTopBar() {
+    val mainWindowViewModel = koinViewModel<MainWindowViewModel>()
+
     var showOneAtori by remember { mutableStateOf(false) }
 
     var showAbout by remember { mutableStateOf(false) }
@@ -43,7 +46,7 @@ fun MainWindowTopBar() {
             AboutDialog()
         }
 
-    MainWindowDelegate.windowScope.WindowDraggableArea {
+    mainWindowViewModel.windowScope.WindowDraggableArea {
         Row(Modifier.fillMaxWidth().height(56.dp)) {
             Box(Modifier.fillMaxHeight().width(64.dp), Alignment.Center) {
                 PrefabAtoriLogoIcon()
@@ -74,20 +77,20 @@ fun MainWindowTopBar() {
                     AtoriIconButton(
                         Res.drawable.ic_minimize_24px,
                         "Minimize", 48
-                    ) { MainWindowDelegate.isMinimized = true }
+                    ) { mainWindowViewModel.isMinimized = true }
 
                     AtoriIconButton(
-                        if (MainWindowDelegate.isMaximized) Res.drawable.ic_leave_fullscreen_24px else Res.drawable.ic_fullscreen_24px,
+                        if (mainWindowViewModel.isMaximized) Res.drawable.ic_leave_fullscreen_24px else Res.drawable.ic_fullscreen_24px,
                         "Maximize/Restore", 48
                     ) {
-                        MainWindowDelegate.isMaximized = !MainWindowDelegate.isMaximized
+                        mainWindowViewModel.isMaximized = !mainWindowViewModel.isMaximized
                     }
 
                     AtoriIconButton(
                         Res.drawable.ic_close_24px,
                         "Close",
                         48
-                    ) { MainWindowDelegate.close() }
+                    ) { mainWindowViewModel.close() }
                 }
             }
         }

@@ -595,8 +595,8 @@ fun DemoChatsPage() {
         val demoConversations = listOf(
             DemoChatModel(
                 Res.drawable.img_avatar_demo,
-                "Y. Lau",
-                "宝宝❤\n永远爱你",
+                "NONAI SOX",
+                "Forever Forever",
                 "2024-11-01 11:45:14".timestamp,
                 5,
                 true, false, 2
@@ -611,7 +611,7 @@ fun DemoChatsPage() {
             ),
             DemoChatModel(
                 Res.drawable.img_avatar_demo,
-                "邹111X",
+                "肘111X",
                 "度尽劫波兄弟在",
                 "2024-11-01 11:45:14".timestamp,
                 0,

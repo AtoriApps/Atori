@@ -16,6 +16,7 @@ import app.atori.resources.*
 import app.atori.resources.Res
 import app.atori.resources.about_summary
 import app.atori.resources.app_name
+import app.atori.utils.ComposeUtils.only
 import app.atori.utils.ResUtils.text
 import app.atori.utils.ResUtils.vector
 import org.jetbrains.compose.resources.DrawableResource
@@ -40,13 +41,14 @@ fun OneAtoriDialog(showAboutAction: () -> Unit = {}) =
         fun ListItem(
             icon: DrawableResource,
             title: String,
-            exPaddin: Boolean = false,
+            standAlone: Boolean = false,
             onClick: () -> Unit = {},
             content: @Composable () -> Unit = {}
         ) =
             Row(
-                Modifier.height(IntrinsicSize.Min).fillMaxWidth().clickable(onClick = onClick)
-                    .padding(if (exPaddin) 32.dp else 24.dp, 12.dp),
+                Modifier.height(IntrinsicSize.Min).fillMaxWidth()
+                    .only(!standAlone) { background(MaterialTheme.colorScheme.surfaceContainerLow) }
+                    .clickable(onClick = onClick).padding(if (standAlone) 32.dp else 24.dp, 12.dp),
                 Arrangement.spacedBy(16.dp),
                 Alignment.CenterVertically
             ) {
@@ -69,39 +71,33 @@ fun OneAtoriDialog(showAboutAction: () -> Unit = {}) =
             // 上半
             Column(
                 Modifier.padding(horizontal = 8.dp).fillMaxWidth()
-                    .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
-                    .background(MaterialTheme.colorScheme.surfaceContainerLow)
+                    .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)), Arrangement.spacedBy(2.dp)
             ) {
-                ListItem(Res.drawable.ic_atori_logo_24px, Res.string.add_contact.text)
-                ListItem(Res.drawable.ic_atori_logo_24px, Res.string.scan.text)
-                ListItem(Res.drawable.ic_atori_logo_24px, Res.string.file_transfer.text)
-            }
-
-            // 中间
-            Column(
-                Modifier.padding(horizontal = 8.dp).fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.surfaceContainerLow)
-            ) {
-                // TODO: 下拉展示账号
-                ListItem(Res.drawable.ic_atori_logo_24px, Res.string.num_accounts.text("0"))
+                ListItem(Res.drawable.ic_add_person_24px, Res.string.add_contact.text)
+                ListItem(Res.drawable.ic_scan_24px, Res.string.scan.text)
+                ListItem(Res.drawable.ic_file_transfer_24px, Res.string.file_transfer.text)
             }
 
             // 下半
             Column(
                 Modifier.padding(horizontal = 8.dp).fillMaxWidth()
-                    .clip(RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
-                    .background(MaterialTheme.colorScheme.surfaceContainerLow)
+                    .clip(RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)), Arrangement.spacedBy(2.dp)
             ) {
-                ListItem(Res.drawable.ic_atori_logo_24px, Res.string.archived_spam_blocked_etc.text)
+                // TODO：下拉展示工作区
+                ListItem(Res.drawable.ic_workspaces_24px, Res.string.num_workspaces.text("114514"))
+                ListItem(Res.drawable.ic_manage_workspaces_24px, Res.string.manage_workspaces.text)
+                // TODO: 下拉展示账号
+                ListItem(Res.drawable.ic_accounts_24px, Res.string.num_accounts.text("1919810"))
+                ListItem(Res.drawable.ic_manage_accounts_24px, Res.string.manage_accounts.text)
             }
         }
 
         // 无边框
         Column(Modifier.fillMaxWidth()) {
-            ListItem(Res.drawable.ic_atori_logo_24px, Res.string.settings.text, true)
-            ListItem(Res.drawable.ic_atori_logo_24px, Res.string.help_feedback.text, true)
-            ListItem(Res.drawable.ic_atori_logo_24px, Res.string.about_atori.text, true, showAboutAction)
-            ListItem(Res.drawable.ic_atori_logo_24px, Res.string.close_atori.text, true)
+            // TODO：是否还要已存档、骚扰信息 ListItem(Res.drawable.ic_atori_logo_24px, Res.string.archived_spam_blocked_etc.text, true)
+            ListItem(Res.drawable.ic_settings_24px, Res.string.settings.text, true)
+            ListItem(Res.drawable.ic_help_24px, Res.string.help_feedback.text, true)
+            ListItem(Res.drawable.ic_logout_24px, Res.string.close_atori.text, true)
         }
     }
 
