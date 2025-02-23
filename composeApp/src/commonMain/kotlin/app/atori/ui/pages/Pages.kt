@@ -39,6 +39,7 @@ import app.atori.utils.ResUtils.vector
 import app.atori.utils.TimestampUtils.timeStr
 import app.atori.utils.TimestampUtils.timestamp
 import app.atori.ui.views.TitledActionIconButtonForCallPage
+import app.atori.utils.MultiplatformLogUtils
 import org.jetbrains.compose.resources.DrawableResource
 import org.koin.compose.koinInject
 
@@ -402,7 +403,7 @@ fun DemoIncomingCallPage(
 ) = Column(
     Modifier.fillMaxSize()
         .background(if (isInDialog) MaterialTheme.colorScheme.surfaceContainerHigh else MaterialTheme.colorScheme.surface)
-        .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top))
+        .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top + WindowInsetsSides.Bottom))
         .only(isInDialog) {
             padding(8.dp).clip(RoundedCornerShape(20.dp))
                 .background(MaterialTheme.colorScheme.surface)
@@ -442,24 +443,16 @@ fun DemoIncomingCallPage(
                 style = MaterialTheme.typography.bodyLarge
             )
         }
-        Box(
-            Modifier.fillMaxWidth().padding(horizontal = 4.dp)
-                .height(if (isInDialog) 48.dp else 64.dp)
-        ) {
-            Text(
-                DemoConstants.userJid, Modifier.align(Alignment.Center),
-                MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.bodyLarge
-            )
-        }
     }
 
     // 按钮面板
     val fOrEt = (if (isInDialog) 48 else 80).dp
+    val sOrEt = (if (isInDialog) 64 else 80).dp
+    val zOrSt = (if (isInDialog) 0 else 16).dp
     Row(
         Modifier.fillMaxWidth()
             .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Bottom)) // FIXME: 是否应该抽离
-            .padding(fOrEt, fOrEt), Arrangement.SpaceBetween, Alignment.CenterVertically
+            .padding(fOrEt, sOrEt, fOrEt, zOrSt), Arrangement.SpaceBetween, Alignment.CenterVertically
     ) {
         @Composable
         fun BigActionButton(
@@ -487,6 +480,17 @@ fun DemoIncomingCallPage(
         BigActionButton(
             Res.drawable.ic_call_24px, Res.string.accept_call.text,
             AtoriIconButtonStyles.SpecialAccept, onClickAccept
+        )
+    }
+
+    // 我方账号
+    Box(
+        Modifier.fillMaxWidth().padding(horizontal = 8.dp).height(64.dp)
+    ) {
+        Text(
+            DemoConstants.userJid, Modifier.align(Alignment.Center),
+            MaterialTheme.colorScheme.onSurfaceVariant,
+            style = MaterialTheme.typography.bodyLarge
         )
     }
 }
@@ -623,8 +627,7 @@ fun DemoChatsPage() {
             itemsIndexed(demoConversations) { index, chat ->
                 ChatsPageChatItem(chat, index == demoState.currentChat.value) {
                     demoState.currentChat.value = index
-                    // demoViewModel.updateChat(index)
-                    // MultiplatformLogUtils.d(TAG, "妈的，哥们就在这里设置：$index")
+                    MultiplatformLogUtils.d(TAG, "设置当前聊天：$index")
                 }
             }
         }

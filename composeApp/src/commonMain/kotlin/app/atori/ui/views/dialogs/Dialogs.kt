@@ -100,12 +100,8 @@ fun OneAtoriDialog(showAboutAction: () -> Unit = {}) =
         Column(Modifier.fillMaxWidth()) {
             ListItem(Res.drawable.ic_atori_logo_24px, Res.string.settings.text, true)
             ListItem(Res.drawable.ic_atori_logo_24px, Res.string.help_feedback.text, true)
-            ListItem(
-                Res.drawable.ic_atori_logo_24px,
-                Res.string.close_atori.text,
-                true,
-                showAboutAction
-            )
+            ListItem(Res.drawable.ic_atori_logo_24px, Res.string.about_atori.text, true, showAboutAction)
+            ListItem(Res.drawable.ic_atori_logo_24px, Res.string.close_atori.text, true)
         }
     }
 

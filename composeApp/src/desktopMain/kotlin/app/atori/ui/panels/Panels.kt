@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -64,7 +65,13 @@ fun SidePanel() {
                     ItemButton(tab, currentRoute == tab.route) {
                         if (currentRoute != tab.route) {
                             tabNaviController.navigate(tab.route) {
-                                launchSingleTop = true
+                                // 优化 Tab 切换体验，避免在同一个 Tab 内重复创建实例
+                                popUpTo(tabNaviController.graph.findStartDestination().id) {
+                                    saveState = true // 保存前一个 Tab 的状态
+                                }
+
+                                launchSingleTop = true // 避免创建多个相同的实例
+                                restoreState = true // 恢复前一个 Tab 的状态
                             }
                         }
                     }
@@ -82,7 +89,6 @@ fun SidePanel() {
             }
         }
 
-        // TODO:当前面板容器
         if (sidePanelViewModel.sidePanelExpanded.value) {
             NavHost(
                 navController = tabNaviController,

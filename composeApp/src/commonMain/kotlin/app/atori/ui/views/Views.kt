@@ -258,17 +258,7 @@ fun DemoChatView() {
                     isHovered = false
                     return false
                 }
-            })
-            /*.pointerMoveFilter( // TODO: 这是个待移除的Api
-                onEnter = {
-                    isHovered = true
-                    false
-                },
-                onExit = {
-                    isHovered = false
-                    false
-                }
-            )*/,
+            }),
             Alignment.CenterStart
         ) {
             if (isHovered) Text(
